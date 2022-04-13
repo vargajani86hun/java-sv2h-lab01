@@ -31,8 +31,8 @@ public class OrderDao {
         return keyHolder.getKey().longValue();
     }
 
-    public void insertItem(long orderId, long userId, int amount) {
-        jdbcTemplate.update("insert into items (order_id, user_id, amount) values (?, ?)",
-                orderId, userId, amount);
+    public void insertItem(long orderId, long productId, int amount) {
+        jdbcTemplate.update("insert into items (order_id, product_id, amount) values (?, ?)",
+                orderId, productId, amount);
     }
 }

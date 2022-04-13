@@ -61,7 +61,7 @@ public class ShopService {
     public void order() {
         long orderId = orderDao.insertOrder(user.getId());
         for (Item item: user.getCart().getItems()) {
-            orderDao.insertItem(orderId, user.getId(), item.getAmount());
+            orderDao.insertItem(orderId, item.getProduct().getId(), item.getAmount());
         }
     }
 
