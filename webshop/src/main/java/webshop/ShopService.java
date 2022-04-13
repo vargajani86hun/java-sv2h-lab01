@@ -22,7 +22,12 @@ public class ShopService {
     }
 
     public void registerUser(String name, String password, String email) {
-        userControl.addUser(new User(name, password, email));
+        if (userDao.findUserByName(name).isEmpty()) {
+            int psw = (name + password).hashCode();
+            userDao.insertUser(name, psw, email);
+        } else {
+            throw new IllegalArgumentException("Name is already taken!");
+        }
     }
 
     public void logIn(String name, String psw) {
@@ -56,8 +61,9 @@ public class ShopService {
     }
 
     public void order() {
+        long orderId = orderDao.insertOrder(user.getId());
         for (Item item: user.getCart().getItems()) {
-            orderDao.insertItem(user, item);
+            orderDao.insertItem(orderId, user.getId(), item.getAmount());
         }
     }
 

@@ -2,6 +2,7 @@ package webshop;
 
 public class User {
 
+    private long id;
     private String name;
     private int password;
     private  String email;
@@ -14,10 +15,15 @@ public class User {
         this.email = email;
     }
 
-    public User(String name, int password, String email) {
+    public User(long id, String name, int password, String email) {
+        this.id = id;
         this.name = name;
         this.password = password;
         this.email = email;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {

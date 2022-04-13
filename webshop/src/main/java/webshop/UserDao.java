@@ -16,16 +16,18 @@ public class UserDao {
 
     public Optional<User> findUserByName(String name) {
         List<User> usersFound =  jdbcTemplate.query("select * from users where name = ?", (rs, rowNum) -> {
+            long id = rs.getLong("id");
             String email = rs.getString("email");
             int password = rs.getInt("password");
-            return new User(name, password, email);
+            return new User(id, name, password, email);
         }, name);
         return usersFound.isEmpty() ? Optional.empty() : Optional.of(usersFound.get(0));
     }
 
-    public void addUser(User user) {
-
-    }
+    public void insertUser(String userName, int password, String email) {
+            jdbcTemplate.update("insert into users (user_name, password, email) values (?, ?, ?)",
+                    userName, password, email);
+        }
 
 
 }

@@ -7,13 +7,4 @@ public class UserControl {
     public UserControl(UserDao userDao) {
         this.userDao = userDao;
     }
-
-    public void addUser(User user) {
-        String name = user.getName();
-        if (userDao.findUserByName(name).isEmpty()) {
-            userDao.addUser(user);
-        } else {
-            throw new IllegalArgumentException("Name is already taken!");
-        }
-    }
 }
