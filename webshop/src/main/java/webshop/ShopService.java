@@ -28,11 +28,11 @@ public class ShopService {
         }
     }
 
-    public void logIn(String name, String psw) {
+    public void logIn(String name, String password) {
         Optional<User> userFound = userDao.findUserByName(name);
         if (userFound.isEmpty()) {
             throw new IllegalArgumentException("Username is wrong!");
-        } else if (userFound.get().getPassword() != (name + psw).hashCode()) {
+        } else if (userFound.get().getPassword() != (name + password).hashCode()) {
             throw new IllegalArgumentException("Password is Invalid!");
         } else {
             user = userFound.get();
