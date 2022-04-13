@@ -84,7 +84,7 @@ public class ShopService {
         }
     }
 
-    public List<String> productList() {
+    public List<String> getProductList() {
         List<String> productList = new ArrayList<>();
         for (Product product: productDao.getProducts()) {
             productList.add(String.format("%d %s %d", product.getId(), product.getName(), product.getPrice()));
