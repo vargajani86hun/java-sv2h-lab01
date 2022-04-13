@@ -14,7 +14,7 @@ public class Cart {
     public List<String> contentOfCart() {
         List<String> contentOfCart = new ArrayList<>();
         for (Item item: items) {
-            contentOfCart.add(String.format("%s %s %d", item.getProduct().getId(), item.getProduct().getName(), item.getAmount()));
+            contentOfCart.add(String.format("%d %s %d", item.getProduct().getId(), item.getProduct().getName(), item.getAmount()));
         }
         return contentOfCart;
     }
