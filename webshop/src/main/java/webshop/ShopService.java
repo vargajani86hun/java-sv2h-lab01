@@ -3,6 +3,7 @@ package webshop;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,5 +82,13 @@ public class ShopService {
             Product product = new Product(name, price);
             productDao.insertProduct(product);
         }
+    }
+
+    public List<String> productList() {
+        List<String> productList = new ArrayList<>();
+        for (Product product: productDao.getProducts()) {
+            productList.add(String.format("%d %s %d", product.getId(), product.getName(), product.getPrice()));
+        }
+        return productList;
     }
 }
