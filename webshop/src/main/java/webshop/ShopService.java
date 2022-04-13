@@ -11,14 +11,12 @@ public class ShopService {
     private ProductDao productDao;
     private UserDao userDao;
     private OrderDao orderDao;
-    private UserControl userControl;
     private User user;
 
     public ShopService(ProductDao productDao, UserDao userDao, OrderDao orderDao) {
         this.productDao = productDao;
         this.userDao = userDao;
         this.orderDao = orderDao;
-        userControl = new UserControl(userDao);
     }
 
     public void registerUser(String name, String password, String email) {
