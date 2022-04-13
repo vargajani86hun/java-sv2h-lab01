@@ -3,9 +3,6 @@ package webshop;
 import org.mariadb.jdbc.MariaDbDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 public class ProductDao {
 
     private JdbcTemplate jdbcTemplate;
