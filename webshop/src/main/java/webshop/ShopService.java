@@ -47,17 +47,17 @@ public class ShopService {
         user.getCart().addItem(new Item(product, 1));
     }
 
-    public void removeItem(Product product) {
-        Item item = getItem(product);
+    public void removeItem(long id) {
+        Item item = getItem(id);
         user.getCart().removeItem(item);
     }
 
-    private Item getItem(Product product) {
-        return user.getCart().getItems().stream().filter(i -> product.getName().equals(i.getProduct().getName())).toList().get(0);
+    private Item getItem(long id) {
+        return user.getCart().getItems().stream().filter(item -> id == item.getProduct().getId()).toList().get(0);
     }
 
-    public void modifyAmount(Product product, int amount) {
-        Item item = getItem(product);
+    public void modifyAmount(Long id, int amount) {
+        Item item = getItem(id);
         item.modifyAmount(amount);
     }
 
