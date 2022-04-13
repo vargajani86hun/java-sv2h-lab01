@@ -1,5 +1,7 @@
 package webshop;
 
+import org.mariadb.jdbc.MariaDbDataSource;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,10 +16,10 @@ public class ShopService {
     private OrderDao orderDao;
     private User user;
 
-    public ShopService(ProductDao productDao, UserDao userDao, OrderDao orderDao) {
-        this.productDao = productDao;
-        this.userDao = userDao;
-        this.orderDao = orderDao;
+    public ShopService(MariaDbDataSource dataSource) {
+        this.productDao = new ProductDao(dataSource);
+        this.userDao = new UserDao(dataSource);
+        this.orderDao = new OrderDao(dataSource);
     }
 
     public void registerUser(String name, String password, String email) {
