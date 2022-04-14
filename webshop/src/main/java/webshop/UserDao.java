@@ -25,7 +25,7 @@ public class UserDao {
             int password = rs.getInt("password");
             return new User(id, name, password, email);
         }, name);
-        return usersFound.isEmpty() ? Optional.empty() : Optional.of(usersFound.get(0));
+        return getUserIfExist(usersFound);
     }
 
     public long insertUser(String userName, int psw, String email) {
@@ -49,6 +49,10 @@ public class UserDao {
                         rs.getInt("password"),
                         rs.getString("email")
                 ), email);
+        return getUserIfExist(findUsers);
+    }
+
+    private Optional<User> getUserIfExist(List<User> findUsers) {
         if (findUsers.isEmpty()) {
             return Optional.empty();
         } else {
