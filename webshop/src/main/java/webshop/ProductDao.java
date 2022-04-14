@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
 public class ProductDao {
 
@@ -18,9 +19,9 @@ public class ProductDao {
     }
 
     public long insertProduct(Product product) {//language=sql
-        Product existingProduct = findProductByName(product.getName());
-        if (existingProduct != null) {
-            return existingProduct.getId();
+        Optional<Product> existingProduct = findProductByName(product.getName());
+        if (existingProduct.isPresent()) {
+            return existingProduct.get().getId();
         }
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -57,11 +58,16 @@ public class ProductDao {
         }
     }
 
-    public Product findProductByName(String name) {//language=sql
-        return jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_name = ?;",
+    public Optional<Product> findProductByName(String name) {//language=sql
+        List<Product> foundProducts = jdbcTemplate.query("SELECT * FROM products WHERE product_name = ?;",
                 (rs, rowNum) -> new Product(rs.getLong("id"),
                         rs.getString("product_name"),
                         rs.getInt("price")),
                 name);
+        if (foundProducts.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(foundProducts.get(0));
+        }
     }
 }
