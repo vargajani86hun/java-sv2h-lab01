@@ -31,7 +31,7 @@ public class UserDao {
     public long insertUser(String userName, int psw, String email) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {//language=sql
-                    PreparedStatement ps = con.prepareStatement("insert into users (user_name, password, email) values (?, ?, ?);",
+                    PreparedStatement ps = con.prepareStatement("insert into users (`user_name`, `password`, `email`) values (?, ?, ?);",
                             Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, userName);
                     ps.setInt(2, psw);
@@ -42,5 +42,12 @@ public class UserDao {
         return keyHolder.getKey().longValue();
     }
 
-
+    public User findUserByEmail(String email) {//language=sql
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email = ?;",
+                (rs, rowNum) -> new User(rs.getLong("id"),
+                        rs.getString("user_name"),
+                        rs.getInt("password"),
+                        rs.getString("email")
+                ), email);
+    }
 }
