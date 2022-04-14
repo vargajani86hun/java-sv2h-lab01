@@ -35,8 +35,8 @@ public class ShopService {
     }
 
     public void logIn(String name, String password) {
-        UserValidator2 validator = new UserValidator2(userDao);
-        validator.validateUserName(name);
+        UserValidator validator = new UserValidator(userDao);
+        validator.validateExistUserName(name);
         User userFound = userDao.findUserByName(name).get();
         validator.validatePasswordLogIn(name, password, userFound);
             user = userFound;
