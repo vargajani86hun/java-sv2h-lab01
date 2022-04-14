@@ -11,7 +11,11 @@ public class Cart {
         return items;
     }
 
-    public List<String> contentOfCart() {
+    public List<Item> contentOfCart() {
+        return items;
+    }
+
+    public List<String> contentOfCartStringFormat() {
         List<String> contentOfCart = new ArrayList<>();
         for (Item item: items) {
             contentOfCart.add(String.format("%d %s %d", item.getProduct().getId(), item.getProduct().getName(), item.getAmount()));

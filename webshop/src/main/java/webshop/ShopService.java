@@ -14,7 +14,7 @@ public class ShopService {
     private UserDao userDao;
     private OrderDao orderDao;
     private User user;
-    private List<Product> products;
+    private List<Product> productList;
     private Path path = Path.of("src/main/resources/products.csv");
 
     public ShopService(MariaDbDataSource dataSource) {
@@ -22,7 +22,7 @@ public class ShopService {
         userDao = new UserDao(dataSource);
         orderDao = new OrderDao(dataSource);
         fillProducts();
-        products = productDao.getProducts();
+        productList = productDao.getProducts();
     }
 
     public void registerUser(String name, String password, String email) {
@@ -87,16 +87,20 @@ public class ShopService {
         }
     }
 
-    public List<String> getProductList() {
-        List<String> productList = new ArrayList<>();
-        for (Product product: products) {
-            productList.add(String.format("%d %s %d", product.getId(), product.getName(), product.getPrice()));
-        }
+    public List<Product> getProductList() {
         return productList;
     }
 
+    public List<String> getProductStringList() {
+        List<String> productListString = new ArrayList<>();
+        for (Product product: productList) {
+            productListString.add(String.format("%d %s %d", product.getId(), product.getName(), product.getPrice()));
+        }
+        return productListString;
+    }
+
     private Product findProductById(long id) {
-        List<Product> productsFound = products.stream().filter(p -> id == p.getId()).toList();
+        List<Product> productsFound = productList.stream().filter(p -> id == p.getId()).toList();
         if (productsFound.isEmpty()) {
             throw new IllegalArgumentException("Product not found!");
         } else {
