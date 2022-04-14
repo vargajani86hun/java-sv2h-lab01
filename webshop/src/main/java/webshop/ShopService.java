@@ -111,4 +111,8 @@ public class ShopService {
     public Cart getUserCart() {
         return user.getCart();
     }
+
+    public String getUserName() {
+        return user.getName();
+    }
 }
