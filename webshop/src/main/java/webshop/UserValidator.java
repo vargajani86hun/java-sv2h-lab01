@@ -50,7 +50,7 @@ public class UserValidator {
         }
     }
 
-    public void validateEmailForNewUser(String email) {
+    public void validateEmail(String email) {
         checkEmailIsEmpty(email);
 
         checkEmailIsUsed(email);

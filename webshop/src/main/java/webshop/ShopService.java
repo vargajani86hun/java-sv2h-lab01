@@ -26,7 +26,7 @@ public class ShopService {
     }
 
     public void registerUser(String name, String password, String email) {
-        UserValidator2 validator = new UserValidator2(userDao);
+        UserValidator validator = new UserValidator(userDao);
         validator.validateNewUserName(name);
         validator.validatePassword(password);
         validator.validateEmail(email);
