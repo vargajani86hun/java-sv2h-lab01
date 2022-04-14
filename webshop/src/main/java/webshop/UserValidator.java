@@ -95,7 +95,7 @@ public class UserValidator {
     }
 
     private void checkEmailIsUsed(String email) {
-        if (userDao.findUserByEmail(email).isEmpty()) {
+        if (userDao.findUserByEmail(email).isPresent()) {
             throw new IllegalArgumentException("An user has been already registered with this email: " + email);
         }
     }
