@@ -55,7 +55,7 @@ public class WebShopMain {
     private void runShoppingMenu() {
         boolean exit = false;
         do {
-            String heading = "Struktúraváltó Barkácsbolt Webshop | Helló "+shopService.getUserName()+", ma minden IS akciós!";
+            String heading = "Struktúraváltó Barkácsbolt Webshop | Helló " + shopService.getUserName() + ", ma minden IS akciós!";
             printMenu(heading, MENUITEMS_WEBSHOP);
             switch (getSelectedMenuItem(8)) {
                 case 1:
@@ -83,6 +83,7 @@ public class WebShopMain {
                     exit = true;
             }
         } while (!exit);
+        System.out.println(FRAME_COLORSCHEME + " Kilépés " + LINE_INPUT_COLORSCHEME);
     }
 
     private void finalOrder() {
@@ -146,7 +147,7 @@ public class WebShopMain {
         int sum = 0;
         for (Item actual : shopService.getUserCart().contentOfCart()) {
             String temp = String.format("Cikkszám:%4s       %-24s  %6s Ft   %4s db   %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
-            actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice());
+                    actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice());
             cartRows.add(printToConsole.upToWidth("     " + temp, 88));
             sum += actual.getSumPrice();
         }
@@ -208,7 +209,6 @@ public class WebShopMain {
         runShoppingMenu();
     }
 
-
     public int getSelectedMenuItem(int menuLinesNumber) {
         Scanner scanner = new Scanner(System.in);
         int selectedMenuItem = 0;
@@ -219,10 +219,9 @@ public class WebShopMain {
                 selectedMenuItem = Integer.parseInt(s);
             } catch (IllegalArgumentException iae) {
                 selectedMenuItem = 0;
-            } finally {
-                if (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber) {
-                    System.out.println(FRAME_COLORSCHEME + " Nincs ilyen menüpont! " + LINE_INPUT_COLORSCHEME);
-                }
+            }
+            if (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber) {
+                System.out.println(FRAME_COLORSCHEME + " Nincs ilyen menüpont! " + LINE_INPUT_COLORSCHEME);
             }
         } while (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber);
         return selectedMenuItem;
