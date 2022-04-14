@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ShopService {
 
@@ -41,8 +40,7 @@ public class ShopService {
         User userFound = userDao.findUserByName(name).get();
         validator.validatePasswordLogIn(name, password, userFound);
             user = userFound;
-            user.setLogIn(true);
-        }
+    }
 
     public void addItem(long id, int amount) {
         Product product = findProductById(id);
@@ -68,6 +66,7 @@ public class ShopService {
         for (Item item: user.getCart().getItems()) {
             orderDao.insertItem(orderId, item.getProduct().getId(), item.getAmount());
         }
+        user.getCart().emptyCart();
     }
 
     private List<String> readFile(Path path) {

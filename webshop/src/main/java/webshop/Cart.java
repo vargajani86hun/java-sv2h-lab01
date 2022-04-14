@@ -26,4 +26,8 @@ public class Cart {
     public void removeItem(Item item) {
         items.remove(item);
     }
+
+    public void emptyCart() {
+        items.clear();
+    }
 }

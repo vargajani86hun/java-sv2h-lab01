@@ -7,7 +7,6 @@ public class User {
     private int password;
     private  String email;
     private Cart cart;
-    private boolean logIn;
 
     public User(String name, String password, String email) {
         this.name = name;
@@ -40,13 +39,5 @@ public class User {
 
     public Cart getCart() {
         return cart;
-    }
-
-    public boolean isLogIn() {
-        return logIn;
-    }
-
-    public void setLogIn(boolean logIn) {
-        this.logIn = logIn;
     }
 }
