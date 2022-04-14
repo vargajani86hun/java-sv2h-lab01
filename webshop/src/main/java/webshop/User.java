@@ -6,13 +6,12 @@ public class User {
     private String name;
     private int password;
     private  String email;
-    private Cart cart;
+    private Cart cart = new Cart();
 
     public User(String name, String password, String email) {
         this.name = name;
         this.password = (name + password).hashCode();
         this.email = email;
-        cart = new Cart();
     }
 
     public User(long id, String name, int password, String email) {
