@@ -105,7 +105,7 @@ public class WebShopMain {
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Mennyiség: ");
         int amount = -1 * Integer.parseInt(scanner.nextLine());
         shopService.modifyAmount(productId, amount);
-        System.out.println(FRAME_COLORSCHEME + " A "+productId+" cikkszámú termékből "+ (-1*amount) +" darabot kivettünk a kosárból." + LINE_INPUT_COLORSCHEME);
+        System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú termékből " + (-1 * amount) + " darabot kivettünk a kosárból." + LINE_INPUT_COLORSCHEME);
     }
 
     private void increaseAmount() {
@@ -116,7 +116,7 @@ public class WebShopMain {
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Mennyiség: ");
         int amount = Integer.parseInt(scanner.nextLine());
         shopService.modifyAmount(productId, amount);
-        System.out.println(FRAME_COLORSCHEME + " A "+productId+" cikkszámú termékből "+ (-1*amount) +" darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
+        System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú termékből " + (-1 * amount) + " darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
     }
 
     private void deleteFromCart() {
@@ -125,7 +125,7 @@ public class WebShopMain {
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Törölni kívánt termék cikkszáma: ");
         long productId = Integer.parseInt(scanner.nextLine());
         shopService.removeItem(productId);
-        System.out.println(FRAME_COLORSCHEME + " A "+productId+" cikkszámú terméket töröltük a kosárból." + LINE_INPUT_COLORSCHEME);
+        System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú terméket töröltük a kosárból." + LINE_INPUT_COLORSCHEME);
     }
 
     private void toCart() {
@@ -137,13 +137,13 @@ public class WebShopMain {
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Mennyisége ");
         int amount = Integer.parseInt(scanner.nextLine());
         shopService.modifyAmount(productId, amount);
-        System.out.println(FRAME_COLORSCHEME + " A "+productId+" cikkszámú termékből "+ amount +" darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
+        System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú termékből " + amount + " darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
     }
 
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
         int sum = 0;
-        for (Item actual: cart.contentOfCart()) {
+        for (Item actual : cart.contentOfCart()) {
             String temp = String.format("Cikkszám: %-6s  ", actual.getProduct().getId()) + actual.getProduct().getName();
             String formattedLine = String.format("%-39s", temp) + String.format("%6d db", actual.getAmount());
             //itt kéne hozzáadni még az árat és az összes árat. és pőersze nem 60 hosszú, hanem mondjuk 80
@@ -151,7 +151,7 @@ public class WebShopMain {
             sum += actual.getSumPrice();
         }
         cartRows.add(printToConsole.upToWidth("      " + "", 64));
-        String sumString= "A kosár összértéke: "+sum+" Ft";
+        String sumString = "A kosár összértéke: " + sum + " Ft";
         cartRows.add(String.format("%62s", sumString));
 
         printToConsole.printRows("A kosár aktuális tartalma", null, cartRows, 64);
@@ -159,7 +159,7 @@ public class WebShopMain {
 
     private void printProducts() {
         List<String> productRows = new ArrayList<>();
-        for (Product actual: shopService.getProductList()) {
+        for (Product actual : shopService.getProductList()) {
             String temp = String.format("Cikkszám: %-6s  ", actual.getId()) + actual.getName();
             String formattedLine = String.format("%-39s", temp) + String.format("%6d Ft", actual.getPrice());
             productRows.add(printToConsole.upToWidth("      " + formattedLine, 62));
