@@ -60,17 +60,21 @@ public class UserValidator {
         }
 
         if (email.indexOf('@') < 1) {
-            throw new IllegalArgumentException("E-mail address should contain '@' character!");
+            throw new IllegalArgumentException("Email address should contain '@' character!");
+        }
+
+        if (email.indexOf('@') != email.lastIndexOf('@')) {
+            throw new IllegalArgumentException("Email address should not contain more then one from '@' character!");
         }
 
         if (email.lastIndexOf('.') < email.indexOf('@')) {
-            throw new IllegalArgumentException("E-mail address should contain a domain at its end.");
+            throw new IllegalArgumentException("Email address should contain a domain at its end.");
         }
     }
 
     private void checkEmailIsEmpty(String email) {
         if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("E-mail address should not be empty!");
+            throw new IllegalArgumentException("Email address should not be empty!");
         }
     }
 
