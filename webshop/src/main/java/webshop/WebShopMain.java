@@ -94,8 +94,6 @@ public class WebShopMain {
         if (answer.equals("i")) {
             shopService.order();
             System.out.println(FRAME_COLORSCHEME + " Köszönjük a megrendelést, iratkozzon fel a hírlevélre, elárasztjuk spammekkel! " + LINE_INPUT_COLORSCHEME);
-            // rendelés feladása
-            // kosár törlése vagy kilépés
         }
     }
 
@@ -142,53 +140,32 @@ public class WebShopMain {
         System.out.println(FRAME_COLORSCHEME + " A "+productId+" cikkszámú termékből "+ amount +" darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
     }
 
-    private List<String> formatText() {
-        List<String> result = new ArrayList<>();
-        int a = 3;
-        int b = 18;
-        int c = 2231;
-        int d = 23;
-        int a2 = 35;
-        int b2 = 5;
-        int c2 = 2821;
-        int d2 = 9337;
-        String a1 = String.format("Cikkszám: %-6s  ", a) + " Ár";
-        String b1 = String.format("Cikkszám: %-6s  ", b) + " Csavarhúzó";
-        String c1 = String.format("Cikkszám: %-6s  ", c) + " Harapófogó";
-        String d1 = String.format("Cikkszám: %-6s  ", d) + " Gyémánt vágótárcsa";
-
-        result.add(String.format("%-39s", a1) + String.format("%6d db", a2));
-        result.add(String.format("%-39s", b1) + String.format("%6d db", b2));
-        result.add(String.format("%-39s", c1) + String.format("%6s db", c2));
-        result.add(String.format("%-39s", d1) + String.format("%6s db", d2));
-        String sum= "A kosár összértéke: "+(a2+b2+c2+d2)+" db";
-        result.add("");
-        result.add(String.format("%48s", sum));
-
-        return result;
-    }
-
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
-        for (String actual : formatText()) {
-            cartRows.add(printToConsole.upToWidth("       " + actual, 64));
+        int sum = 0;
+        for (Item actual: cart.contentOfCart()) {
+            String temp = String.format("Cikkszám: %-6s  ", actual.getProduct().getId()) + actual.getProduct().getName();
+            String formattedLine = String.format("%-39s", temp) + String.format("%6d db", actual.getAmount());
+            //itt kéne hozzáadni még az árat és az összes árat. és pőersze nem 60 hosszú, hanem mondjuk 80
+            cartRows.add(printToConsole.upToWidth("      " + formattedLine, 62));
+            sum += actual.getSumPrice();
         }
+        cartRows.add(printToConsole.upToWidth("      " + "", 64));
+        String sumString= "A kosár összértéke: "+sum+" Ft";
+        cartRows.add(String.format("%62s", sumString));
 
-//        List<String> cartRows = new ArrayList<>();
-//        for (String actual : cart.contentOfCart()) {
-//            cartRows.add(printToConsole.upToWidth("        " + actual, 50));
-//        }
         printToConsole.printRows("A kosár aktuális tartalma", null, cartRows, 64);
     }
 
     private void printProducts() {
         List<String> productRows = new ArrayList<>();
-        for (String actual : shopService.getProductList()) {
-            productRows.add(printToConsole.upToWidth("        " + actual, 50));
+        for (Product actual: shopService.getProductList()) {
+            String temp = String.format("Cikkszám: %-6s  ", actual.getId()) + actual.getName();
+            String formattedLine = String.format("%-39s", temp) + String.format("%6d Ft", actual.getPrice());
+            productRows.add(printToConsole.upToWidth("      " + formattedLine, 62));
         }
-        printToConsole.printRows("Webshopunk termékei", null, productRows, 50);
+        printToConsole.printRows("Webshopunk termékei", null, productRows, 62);
     }
-
 
     private void runLoginMenu() {
         boolean exit = false;
@@ -205,6 +182,7 @@ public class WebShopMain {
                     exit = true;
             }
         } while (!exit);
+        System.out.println(FRAME_COLORSCHEME + " Kilépés " + LINE_INPUT_COLORSCHEME);
     }
 
     private void registerUser() {
@@ -226,12 +204,12 @@ public class WebShopMain {
         String userName = scanner.nextLine();
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Jelszó: ");
         String password = scanner.nextLine();
-//        shopService.logIn(userName, password);
+        shopService.logIn(userName, password);
         runShoppingMenu();
     }
 
 
-    public int getSelectedMenuItem(int menuLines) {
+    public int getSelectedMenuItem(int menuLinesNumber) {
         Scanner scanner = new Scanner(System.in);
         int selectedMenuItem = 0;
         do {
@@ -242,11 +220,11 @@ public class WebShopMain {
             } catch (IllegalArgumentException iae) {
                 selectedMenuItem = 0;
             } finally {
-                if (selectedMenuItem <= 0 || selectedMenuItem > menuLines) {
+                if (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber) {
                     System.out.println(FRAME_COLORSCHEME + " Nincs ilyen menüpont! " + LINE_INPUT_COLORSCHEME);
                 }
             }
-        } while (selectedMenuItem <= 0 || selectedMenuItem > menuLines);
+        } while (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber);
         return selectedMenuItem;
     }
 
