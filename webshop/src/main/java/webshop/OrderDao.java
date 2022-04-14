@@ -19,14 +19,11 @@ public class OrderDao {
 
     public long insertOrder(long userId) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {//language=sql
-                PreparedStatement ps = con.prepareStatement("INSERT INTO orders (user_id, order_date) VALUES (?, ?);", PreparedStatement.RETURN_GENERATED_KEYS);
-                ps.setLong(1, userId);
-                ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-                return ps;
-            }
+        jdbcTemplate.update(con -> {//language=sql
+            PreparedStatement ps = con.prepareStatement("INSERT INTO orders (user_id, order_date) VALUES (?, ?);", PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, userId);
+            ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+            return ps;
         }, keyHolder);
         return keyHolder.getKey().longValue();
     }
