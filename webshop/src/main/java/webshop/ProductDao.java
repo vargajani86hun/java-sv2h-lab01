@@ -13,8 +13,8 @@ public class ProductDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void insertProduct(Product product) {
-        jdbcTemplate.update("insert into products (name, price) values (?, ?)",
+    public void insertProduct(Product product) {//language=sql
+        jdbcTemplate.update("insert into products (product_name, price) values (?, ?)",
                 product.getName(), product.getPrice());
     }
 
