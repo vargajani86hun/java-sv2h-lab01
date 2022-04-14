@@ -45,7 +45,6 @@ public class WebShopMain {
         }
 
         Flyway flyway = Flyway.configure().dataSource(dataSource).load();
-//        flyway.clean();
         flyway.migrate();
 
         webShopMain.shopService = new ShopService(dataSource);
@@ -139,7 +138,6 @@ public class WebShopMain {
         int amount = Integer.parseInt(scanner.nextLine());
         shopService.addItem(productId, amount);
         System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú termékből " + amount + " darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
-
     }
 
     private void printCart() {
