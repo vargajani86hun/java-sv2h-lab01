@@ -15,36 +15,38 @@ public class ShopService {
     private UserDao userDao;
     private OrderDao orderDao;
     private User user;
+    private List<Product> products;
+    private Path path = Path.of("src/main/resources/products.csv");
 
     public ShopService(MariaDbDataSource dataSource) {
-        this.productDao = new ProductDao(dataSource);
-        this.userDao = new UserDao(dataSource);
-        this.orderDao = new OrderDao(dataSource);
+        productDao = new ProductDao(dataSource);
+        userDao = new UserDao(dataSource);
+        orderDao = new OrderDao(dataSource);
+        fillProducts();
+        products = productDao.getProducts();
     }
 
     public void registerUser(String name, String password, String email) {
-        if (userDao.findUserByName(name).isEmpty()) {
-            int psw = (name + password).hashCode();
-            userDao.insertUser(name, psw, email);
-        } else {
-            throw new IllegalArgumentException("Name is already taken!");
-        }
+        UserValidator2 validator = new UserValidator2(userDao);
+        validator.validateNewUserName(name);
+        validator.validatePassword(password);
+        validator.validateEmail(email);
+        int psw = (name + password).hashCode();
+        userDao.insertUser(name, psw, email);
     }
 
     public void logIn(String name, String password) {
-        Optional<User> userFound = userDao.findUserByName(name);
-        if (userFound.isEmpty()) {
-            throw new IllegalArgumentException("Username is wrong!");
-        } else if (userFound.get().getPassword() != (name + password).hashCode()) {
-            throw new IllegalArgumentException("Password is Invalid!");
-        } else {
-            user = userFound.get();
+        UserValidator2 validator = new UserValidator2(userDao);
+        validator.validateUserName(name);
+        User userFound = userDao.findUserByName(name).get();
+        validator.validatePasswordLogIn(name, password, userFound);
+            user = userFound;
             user.setLogIn(true);
         }
-    }
 
-    public void addItem(Product product) {
-        user.getCart().addItem(new Item(product, 1));
+    public void addItem(long id, int amount) {
+        Product product = findProductById(id);
+        user.getCart().addItem(new Item(product, amount));
     }
 
     public void removeItem(long id) {
@@ -76,7 +78,7 @@ public class ShopService {
         }
     }
 
-    public void fillProducts(Path path) {
+    public void fillProducts() {
         for (String line: readFile(path)) {
             String[] parts = line.split(";");
             String name = parts[0];
@@ -88,9 +90,18 @@ public class ShopService {
 
     public List<String> getProductList() {
         List<String> productList = new ArrayList<>();
-        for (Product product: productDao.getProducts()) {
+        for (Product product: products) {
             productList.add(String.format("%d %s %d", product.getId(), product.getName(), product.getPrice()));
         }
         return productList;
+    }
+
+    private Product findProductById(long id) {
+        List<Product> productsFound = products.stream().filter(p -> id == p.getId()).toList();
+        if (productsFound.isEmpty()) {
+            throw new IllegalArgumentException("Product not found!");
+        } else {
+            return productsFound.get(0);
+        }
     }
 }

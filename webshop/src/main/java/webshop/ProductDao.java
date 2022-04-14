@@ -26,4 +26,17 @@ public class ProductDao {
             return new Product(id, name, price);
         });
     }
+
+    public Product findProductById(long id) {
+        List<Product> productsFound = jdbcTemplate.query("select * from products", (rs, col) -> {
+            String name = rs.getString("product_name");
+            int price = rs.getInt("price");
+            return new Product(id, name, price);
+        });
+        if (productsFound.isEmpty()) {
+            throw new IllegalArgumentException("Product not found!");
+        } else {
+            return productsFound.get(0);
+        }
+    }
 }

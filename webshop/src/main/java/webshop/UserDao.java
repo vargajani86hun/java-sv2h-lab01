@@ -24,9 +24,9 @@ public class UserDao {
         return usersFound.isEmpty() ? Optional.empty() : Optional.of(usersFound.get(0));
     }
 
-    public void insertUser(String userName, int password, String email) {
+    public void insertUser(String userName, int psw, String email) {
             jdbcTemplate.update("insert into users (user_name, password, email) values (?, ?, ?)",
-                    userName, password, email);
+                    userName, psw, email);
         }
 
 
