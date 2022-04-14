@@ -93,7 +93,7 @@ public class WebShopMain {
         String answer = scanner.nextLine();
         if (answer.equals("i")) {
             shopService.order();
-            System.out.println(FRAME_COLORSCHEME + " Köszönjük a megrendelést, iratkozzon fel a hírlevélre, elárasztjuk spammekkel! " + LINE_INPUT_COLORSCHEME);
+            System.out.println(FRAME_COLORSCHEME + " Köszönjük a megrendelést, iratkozzon fel hírlevelünkre, elárasztjuk spammekkel! " + LINE_INPUT_COLORSCHEME);
         }
     }
 
@@ -130,14 +130,15 @@ public class WebShopMain {
 
     private void toCart() {
         printCart();
-        Scanner scanner = new Scanner(System.in);
         printProducts();
+        Scanner scanner = new Scanner(System.in);
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Megvenni kívánt termék cikkszáma: ");
         long productId = Integer.parseInt(scanner.nextLine());
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Mennyisége ");
         int amount = Integer.parseInt(scanner.nextLine());
-        shopService.modifyAmount(productId, amount);
+        shopService.addItem(productId, amount);
         System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú termékből " + amount + " darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
+
     }
 
     private void printCart() {
@@ -158,6 +159,7 @@ public class WebShopMain {
     }
 
     private void printProducts() {
+        System.out.println();
         List<String> productRows = new ArrayList<>();
         for (Product actual : shopService.getProductList()) {
             String temp = String.format("Cikkszám: %-6s  ", actual.getId()) + actual.getName();
