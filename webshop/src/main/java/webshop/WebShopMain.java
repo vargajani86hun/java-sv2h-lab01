@@ -144,13 +144,8 @@ public class WebShopMain {
         List<String> cartRows = new ArrayList<>();
         int sum = 0;
         for (Item actual : shopService.getUserCart().contentOfCart()) {
-//            String temp = String.format("Cikkszám: %-6s  ", actual.getProduct().getId()) + actual.getProduct().getName();
-//            String formattedLine = String.format("%-39s", temp) + String.format("%6s Ft", actual.getProduct().getPrice()) +
-//            String.format("%6s db %8s Ft", actual.getAmount(), actual.getSumPrice());
-
             String temp = String.format("Cikkszám: %4s %-29s  %6s Ft   %4s db   %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
             actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice());
-
             cartRows.add(printToConsole.upToWidth("     " + temp, 88));
             sum += actual.getSumPrice();
         }
@@ -165,11 +160,10 @@ public class WebShopMain {
         System.out.println();
         List<String> productRows = new ArrayList<>();
         for (Product actual : shopService.getProductList()) {
-            String temp = String.format("Cikkszám: %-6s  ", actual.getId()) + actual.getName();
-            String formattedLine = String.format("%-39s", temp) + String.format("%6d Ft", actual.getPrice());
-            productRows.add(printToConsole.upToWidth("      " + formattedLine, 62));
+            String temp = String.format("Cikkszám: %4s %-29s  %6s Ft", actual.getId(), actual.getName(), actual.getPrice());
+            productRows.add(printToConsole.upToWidth("      " + temp, 66));
         }
-        printToConsole.printRows("Webshopunk termékei", null, productRows, 62);
+        printToConsole.printRows("Webshopunk termékei", null, productRows, 66);
     }
 
     private void runLoginMenu() {
