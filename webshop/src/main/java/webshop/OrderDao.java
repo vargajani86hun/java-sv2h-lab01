@@ -21,8 +21,8 @@ public class OrderDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement ps = con.prepareStatement("insert into orders (user_id, order_date) values (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {//language=sql
+                PreparedStatement ps = con.prepareStatement("INSERT INTO orders (user_id, order_date) VALUES (?, ?);", PreparedStatement.RETURN_GENERATED_KEYS);
                 ps.setLong(1, userId);
                 ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
                 return ps;
@@ -31,8 +31,8 @@ public class OrderDao {
         return keyHolder.getKey().longValue();
     }
 
-    public void insertItem(long orderId, long productId, int amount) {
-        jdbcTemplate.update("insert into items (order_id, product_id, amount) values (?, ?)",
+    public void insertItem(long orderId, long productId, int amount) {//language=sql
+        jdbcTemplate.update("INSERT INTO items (order_id, product_id, amount) VALUES (?, ?, ?);",
                 orderId, productId, amount);
     }
 }
