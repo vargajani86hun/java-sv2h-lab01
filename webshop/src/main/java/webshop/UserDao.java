@@ -42,12 +42,17 @@ public class UserDao {
         return keyHolder.getKey().longValue();
     }
 
-    public User findUserByEmail(String email) {//language=sql
-        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email = ?;",
+    public Optional<User> findUserByEmail(String email) {//language=sql
+        List<User> findUsers = jdbcTemplate.query("SELECT * FROM users WHERE email = ?;",
                 (rs, rowNum) -> new User(rs.getLong("id"),
                         rs.getString("user_name"),
                         rs.getInt("password"),
                         rs.getString("email")
                 ), email);
+        if (findUsers.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(findUsers.get(0));
+        }
     }
 }
