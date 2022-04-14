@@ -19,7 +19,7 @@ public class UserDao {
     }
 
     public Optional<User> findUserByName(String name) {//language=sql
-        List<User> usersFound =  jdbcTemplate.query("select * from users where name = ?;", (rs, rowNum) -> {
+        List<User> usersFound =  jdbcTemplate.query("SELECT * FROM users WHERE user_name = ?;", (rs, rowNum) -> {
             long id = rs.getLong("id");
             String email = rs.getString("email");
             int password = rs.getInt("password");
@@ -31,7 +31,7 @@ public class UserDao {
     public long insertUser(String userName, int psw, String email) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {//language=sql
-                    PreparedStatement ps = con.prepareStatement("insert into users (`user_name`, `password`, `email`) values (?, ?, ?);",
+                    PreparedStatement ps = con.prepareStatement("INSERT INTO users (`user_name`, `password`, `email`) VALUES (?, ?, ?);",
                             Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, userName);
                     ps.setInt(2, psw);
