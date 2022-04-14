@@ -12,6 +12,7 @@ public class User {
         this.name = name;
         this.password = (name + password).hashCode();
         this.email = email;
+        cart = new Cart();
     }
 
     public User(long id, String name, int password, String email) {
