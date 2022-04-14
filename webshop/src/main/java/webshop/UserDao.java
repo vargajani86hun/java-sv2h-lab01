@@ -2,7 +2,11 @@ package webshop;
 
 import org.mariadb.jdbc.MariaDbDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,8 +18,8 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public Optional<User> findUserByName(String name) {
-        List<User> usersFound =  jdbcTemplate.query("select * from users where name = ?", (rs, rowNum) -> {
+    public Optional<User> findUserByName(String name) {//language=sql
+        List<User> usersFound =  jdbcTemplate.query("select * from users where name = ?;", (rs, rowNum) -> {
             long id = rs.getLong("id");
             String email = rs.getString("email");
             int password = rs.getInt("password");
@@ -24,10 +28,19 @@ public class UserDao {
         return usersFound.isEmpty() ? Optional.empty() : Optional.of(usersFound.get(0));
     }
 
-    public void insertUser(String userName, int psw, String email) {
-            jdbcTemplate.update("insert into users (user_name, password, email) values (?, ?, ?)",
-                    userName, psw, email);
-        }
+    public long insertUser(String userName, int psw, String email) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {//language=sql
+                    PreparedStatement ps = con.prepareStatement("insert into users (user_name, password, email) values (?, ?, ?);",
+                            Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, userName);
+                    ps.setInt(2, psw);
+                    ps.setString(3, email);
+                    return ps;
+                }
+                , keyHolder);
+        return keyHolder.getKey().longValue();
+    }
 
 
 }
