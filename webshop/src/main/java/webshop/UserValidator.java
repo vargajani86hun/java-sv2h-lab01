@@ -55,20 +55,36 @@ public class UserValidator {
 
         checkEmailIsUsed(email);
 
-        if (email.length() < 3) {
-            throw new IllegalArgumentException("It's too short to be valid e-mail address");
-        }
+        validateEmailLength(email);
 
-        if (email.indexOf('@') < 1) {
-            throw new IllegalArgumentException("Email address should contain '@' character!");
-        }
+        checkEmailHasAtChar(email);
 
+        checkEmailNotHasMoreAtChar(email);
+
+        checkEmailHasDomain(email);
+    }
+
+    private void checkEmailHasDomain(String email) {
+        if (email.lastIndexOf('.') < email.indexOf('@')) {
+            throw new IllegalArgumentException("Email address should contain a domain at its end.");
+        }
+    }
+
+    private void checkEmailNotHasMoreAtChar(String email) {
         if (email.indexOf('@') != email.lastIndexOf('@')) {
             throw new IllegalArgumentException("Email address should not contain more then one from '@' character!");
         }
+    }
 
-        if (email.lastIndexOf('.') < email.indexOf('@')) {
-            throw new IllegalArgumentException("Email address should contain a domain at its end.");
+    private void checkEmailHasAtChar(String email) {
+        if (email.indexOf('@') < 1) {
+            throw new IllegalArgumentException("Email address should contain '@' character!");
+        }
+    }
+
+    private void validateEmailLength(String email) {
+        if (email.length() < 3) {
+            throw new IllegalArgumentException("It's too short to be valid e-mail address");
         }
     }
 
