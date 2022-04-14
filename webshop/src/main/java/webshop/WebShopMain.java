@@ -45,7 +45,7 @@ public class WebShopMain {
         }
 
         Flyway flyway = Flyway.configure().dataSource(dataSource).load();
-        flyway.clean();
+//        flyway.clean();
         flyway.migrate();
 
         webShopMain.shopService = new ShopService(dataSource);
@@ -144,17 +144,21 @@ public class WebShopMain {
         List<String> cartRows = new ArrayList<>();
         int sum = 0;
         for (Item actual : shopService.getUserCart().contentOfCart()) {
-            String temp = String.format("Cikkszám: %-6s  ", actual.getProduct().getId()) + actual.getProduct().getName();
-            String formattedLine = String.format("%-39s", temp) + String.format("%6d db", actual.getAmount());
-            //itt kéne hozzáadni még az árat és az összes árat. és pőersze nem 60 hosszú, hanem mondjuk 80
-            cartRows.add(printToConsole.upToWidth("      " + formattedLine, 64));
+//            String temp = String.format("Cikkszám: %-6s  ", actual.getProduct().getId()) + actual.getProduct().getName();
+//            String formattedLine = String.format("%-39s", temp) + String.format("%6s Ft", actual.getProduct().getPrice()) +
+//            String.format("%6s db %8s Ft", actual.getAmount(), actual.getSumPrice());
+
+            String temp = String.format("Cikkszám: %4s %-29s  %6s Ft   %4s db   %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
+            actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice());
+
+            cartRows.add(printToConsole.upToWidth("     " + temp, 88));
             sum += actual.getSumPrice();
         }
-        cartRows.add(printToConsole.upToWidth("      " + "", 64));
+        cartRows.add(printToConsole.upToWidth("      " + "", 88));
         String sumString = "A kosár összértéke: " + sum + " Ft";
-        cartRows.add(String.format("%62s", sumString));
+        cartRows.add(String.format("%84s  ", sumString));
 
-        printToConsole.printRows("A kosár aktuális tartalma", null, cartRows, 64);
+        printToConsole.printRows("A kosár aktuális tartalma", null, cartRows, 88);
     }
 
     private void printProducts() {
