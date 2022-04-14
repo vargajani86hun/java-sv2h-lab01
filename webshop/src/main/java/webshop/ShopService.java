@@ -107,4 +107,8 @@ public class ShopService {
             return productsFound.get(0);
         }
     }
+
+    public Cart getUserCart() {
+        return user.getCart();
+    }
 }
