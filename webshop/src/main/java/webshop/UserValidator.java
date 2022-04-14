@@ -2,19 +2,13 @@ package webshop;
 
 public class UserValidator {
 
-    private String userName;
-    private String password;
-    private String email;
     private UserDao userDao;
 
-    public UserValidator(String userName, String password, String email, UserDao userDao) {
-        this.userName = userName;
-        this.password = password;
-        this.email = email;
+    public UserValidator(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public void validateUserName() {
+    public void validateUserName(String userName) {
         if (userName == null || userName.isEmpty()) {
             throw new IllegalArgumentException("User name should not be empty!");
         }
@@ -24,7 +18,7 @@ public class UserValidator {
         }
     }
 
-    public void validatePassword() {
+    public void validatePassword(String password) {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("Password should not be empty!");
         }
