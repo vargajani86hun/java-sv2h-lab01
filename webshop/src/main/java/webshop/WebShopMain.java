@@ -55,7 +55,8 @@ public class WebShopMain {
     private void runShoppingMenu() {
         boolean exit = false;
         do {
-            printMenu("Struktúraváltó Barkácsbolt Webshop", MENUITEMS_WEBSHOP);
+            String heading = "Struktúraváltó Barkácsbolt Webshop | Helló "+shopService.getUserName()+", ma minden IS akciós!";
+            printMenu(heading, MENUITEMS_WEBSHOP);
             switch (getSelectedMenuItem(8)) {
                 case 1:
                     printProducts();
@@ -144,7 +145,7 @@ public class WebShopMain {
         List<String> cartRows = new ArrayList<>();
         int sum = 0;
         for (Item actual : shopService.getUserCart().contentOfCart()) {
-            String temp = String.format("Cikkszám: %4s %-29s  %6s Ft   %4s db   %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
+            String temp = String.format("Cikkszám:%4s       %-24s  %6s Ft   %4s db   %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
             actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice());
             cartRows.add(printToConsole.upToWidth("     " + temp, 88));
             sum += actual.getSumPrice();
@@ -160,7 +161,7 @@ public class WebShopMain {
         System.out.println();
         List<String> productRows = new ArrayList<>();
         for (Product actual : shopService.getProductList()) {
-            String temp = String.format("Cikkszám: %4s %-29s  %6s Ft", actual.getId(), actual.getName(), actual.getPrice());
+            String temp = String.format("Cikkszám:%4s      %-24s  %6s Ft", actual.getId(), actual.getName(), actual.getPrice());
             productRows.add(printToConsole.upToWidth("      " + temp, 66));
         }
         printToConsole.printRows("Webshopunk termékei", null, productRows, 66);
@@ -231,9 +232,9 @@ public class WebShopMain {
         List<String> printMenuItems = new ArrayList<>();
         System.out.println();
         for (String actual : menuItems) {
-            printMenuItems.add(printToConsole.centerText(actual, 68));
+            printMenuItems.add(printToConsole.centerText(actual, 76));
         }
-        printToConsole.printRows("M E N Ü", heading, printMenuItems, 70);
+        printToConsole.printRows("M E N Ü", heading, printMenuItems, 78);
     }
 
 }
