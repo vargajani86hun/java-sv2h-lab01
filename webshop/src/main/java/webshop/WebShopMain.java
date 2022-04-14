@@ -29,13 +29,11 @@ public class WebShopMain {
             "[8] Kilépés");
 
     private PrintToConsole printToConsole;
-    private Cart cart;
     private ShopService shopService;
 
     public static void main(String[] args) {
         WebShopMain webShopMain = new WebShopMain();
         webShopMain.printToConsole = new PrintToConsole();
-        webShopMain.cart = new Cart();
 
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
@@ -93,7 +91,8 @@ public class WebShopMain {
         String answer = scanner.nextLine();
         if (answer.equals("i")) {
             shopService.order();
-            System.out.println(FRAME_COLORSCHEME + " Köszönjük a megrendelést, iratkozzon fel hírlevelünkre, elárasztjuk spammekkel! " + LINE_INPUT_COLORSCHEME);
+            System.out.println(FRAME_COLORSCHEME + " Köszönjük a megrendelést!" + LINE_INPUT_COLORSCHEME);
+            System.out.println(FRAME_COLORSCHEME + " Iratkozzon fel hírlevelünkre is, elárasztjuk spamekkel! " + LINE_INPUT_COLORSCHEME);
         }
     }
 
@@ -144,11 +143,11 @@ public class WebShopMain {
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
         int sum = 0;
-        for (Item actual : cart.contentOfCart()) {
+        for (Item actual : shopService.getUserCart().contentOfCart()) {
             String temp = String.format("Cikkszám: %-6s  ", actual.getProduct().getId()) + actual.getProduct().getName();
             String formattedLine = String.format("%-39s", temp) + String.format("%6d db", actual.getAmount());
             //itt kéne hozzáadni még az árat és az összes árat. és pőersze nem 60 hosszú, hanem mondjuk 80
-            cartRows.add(printToConsole.upToWidth("      " + formattedLine, 62));
+            cartRows.add(printToConsole.upToWidth("      " + formattedLine, 64));
             sum += actual.getSumPrice();
         }
         cartRows.add(printToConsole.upToWidth("      " + "", 64));
