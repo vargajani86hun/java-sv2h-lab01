@@ -6,7 +6,7 @@ public class User {
     private String name;
     private int password;
     private  String email;
-    private Cart cart;
+    private Cart cart = new Cart();
 
     public User(String name, String password, String email) {
         this.name = name;
