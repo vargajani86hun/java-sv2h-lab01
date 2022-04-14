@@ -18,6 +18,11 @@ public class ProductDao {
     }
 
     public long insertProduct(Product product) {//language=sql
+        Product existingProduct = findProductByName(product.getName());
+        if (existingProduct != null) {
+            return existingProduct.getId();
+        }
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
                     PreparedStatement ps = con.prepareStatement("INSERT INTO products (product_name, price) VALUES (?, ?)",
@@ -30,7 +35,7 @@ public class ProductDao {
         return keyHolder.getKey().longValue();
     }
 
-    public List<Product> getProducts() {
+    public List<Product> getProducts() {//language=sql
         return jdbcTemplate.query("select * from products", (rs, col) -> {
             long id = rs.getLong("id");
             String name = rs.getString("product_name");
@@ -39,7 +44,7 @@ public class ProductDao {
         });
     }
 
-    public Product findProductById(long id) {
+    public Product findProductById(long id) {//language=sql
         List<Product> productsFound = jdbcTemplate.query("select * from products", (rs, col) -> {
             String name = rs.getString("product_name");
             int price = rs.getInt("price");
@@ -50,5 +55,13 @@ public class ProductDao {
         } else {
             return productsFound.get(0);
         }
+    }
+
+    public Product findProductByName(String name) {//language=sql
+        return jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_name = ?;",
+                (rs, rowNum) -> new Product(rs.getLong("id"),
+                        rs.getString("product_name"),
+                        rs.getInt("price")),
+                name);
     }
 }
