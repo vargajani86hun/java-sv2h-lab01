@@ -196,7 +196,7 @@ public class WebShopMain {
         shopService.registerUser(userName, password, email);
     }
 
-    public void Login() {
+    private void Login() {
         Scanner scanner = new Scanner(System.in);
         System.out.println(FRAME_COLORSCHEME + " Belépés " + LINE_INPUT_COLORSCHEME);
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Felhasználónév: ");
@@ -207,7 +207,7 @@ public class WebShopMain {
         runShoppingMenu();
     }
 
-    public int getSelectedMenuItem(int menuLinesNumber) {
+    private int getSelectedMenuItem(int menuLinesNumber) {
         Scanner scanner = new Scanner(System.in);
         int selectedMenuItem = 0;
         do {
@@ -225,7 +225,7 @@ public class WebShopMain {
         return selectedMenuItem;
     }
 
-    public void printMenu(String heading, List<String> menuItems) {
+    private void printMenu(String heading, List<String> menuItems) {
         List<String> printMenuItems = new ArrayList<>();
         System.out.println();
         for (String actual : menuItems) {
