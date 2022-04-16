@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 
 public class WebShopMain {
+    private final String UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[4;1m";
+    private final String NOT_UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[24;22m";
     private static final String FRAME_COLORSCHEME = "\u001B[30;43m";
     private static final String LINE_INPUT_COLORSCHEME = "\u001B[33;49m";
     private static final List<String> MENUITEMS_LOGIN = Arrays.asList(
@@ -23,18 +25,14 @@ public class WebShopMain {
             "[2] Kosár tartalmának megtekintése",
             "[3] Termék kosárba helyezése",
             "[4] Termék kivétele a kosárból",
-            "[5] Termék mennyiségének növelése",
-            "[6] Termék mennyiségének csökkentése",
+            "[5] Termék mennyiségének növelése a kosárban",
+            "[6] Termék mennyiségének csökkentése a kosárban",
             "[7] Rendelés véglegesítése",
             "[8] Kilépés");
 
-    private PrintToConsole printToConsole;
     private ShopService shopService;
 
     public static void main(String[] args) {
-        WebShopMain webShopMain = new WebShopMain();
-        webShopMain.printToConsole = new PrintToConsole();
-
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
             dataSource.setUrl("jdbc:mariadb://localhost:3306/webshop?useUnicode=true");
@@ -47,16 +45,79 @@ public class WebShopMain {
         Flyway flyway = Flyway.configure().dataSource(dataSource).load();
         flyway.migrate();
 
+        WebShopMain webShopMain = new WebShopMain();
         webShopMain.shopService = new ShopService(dataSource);
         webShopMain.runLoginMenu();
+    }
+
+    private void runLoginMenu() {
+        boolean exit = false;
+        do {
+            TableForUX loginMenu = new TableForUX(76, MENUITEMS_LOGIN, List.of("Belépés csak regisztrált ügyfeleknek", "M E N Ü"));
+            loginMenu.print();
+            switch (getSelectedMenuItem(MENUITEMS_LOGIN.size())) {
+                case 1:
+                    Login();
+                    break;
+                case 2:
+                    registerUser();
+                    break;
+                case 3:
+                    exit = true;
+            }
+        } while (!exit);
+        messagePrint("Kilépés");
+    }
+
+    private void registerUser() {
+        messagePrint("Regisztráció");
+        List<String> input = inputsToList("Felhasználónév:", "Jelszó:", "Email:");
+        shopService.registerUser(input.get(0), input.get(1), input.get(2));
+        messagePrint("Kedves " + input.get(0) + ", a regisztráció sikeres volt, kedvezményért iratkozz fel hírlevelünkre is!");
+    }
+
+    private void Login() {
+        messagePrint("Belépés");
+        List<String> input = inputsToList("Felhasználónév:", "Jelszó:");
+        shopService.logIn(input.get(0), input.get(1));
+        runShoppingMenu();
+    }
+
+    private int getSelectedMenuItem(int menuLinesNumber) {
+        Scanner scanner = new Scanner(System.in);
+        int selectedMenuItem = 0;
+        do {
+            frameAndTextPrint("Válassz a menüből!");
+            String s = scanner.nextLine();
+            try {
+                selectedMenuItem = Integer.parseInt(s);
+            } catch (IllegalArgumentException iae) {
+                selectedMenuItem = 0;
+            }
+            if (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber) {
+                messagePrint("Nincs ilyen menüpont!");
+            }
+        } while (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber);
+        return selectedMenuItem;
+    }
+
+    private List<String> inputsToList(String... texts) {
+        Scanner scanner = new Scanner(System.in);
+        List<String> result = new ArrayList<>();
+        for (String actual : texts) {
+            frameAndTextPrint(actual);
+            result.add(scanner.nextLine());
+        }
+        return result;
     }
 
     private void runShoppingMenu() {
         boolean exit = false;
         do {
-            String heading = "Struktúraváltó Barkácsbolt Webshop | Helló " + shopService.getUserName() + ", ma minden IS akciós!";
-            printMenu(heading, MENUITEMS_WEBSHOP);
-            switch (getSelectedMenuItem(8)) {
+            String headingLine = String.format("%74s", ("Helló " + shopService.getUserName() + ", ma minden IS akciós!"));
+            TableForUX shoppingMenu = new TableForUX(76, MENUITEMS_WEBSHOP, List.of(headingLine, "Struktúraváltó Barkácsbolt Webshop"));
+            shoppingMenu.print();
+            switch (getSelectedMenuItem(MENUITEMS_WEBSHOP.size())) {
                 case 1:
                     printProducts();
                     break;
@@ -64,7 +125,7 @@ public class WebShopMain {
                     printCart();
                     break;
                 case 3:
-                    toCart();
+                    putToCart();
                     break;
                 case 4:
                     deleteFromCart();
@@ -76,163 +137,105 @@ public class WebShopMain {
                     decreaseAmount();
                     break;
                 case 7:
-                    finalOrder();
+                    finalizeOrder();
                     break;
                 case 8:
                     exit = true;
             }
         } while (!exit);
-        System.out.println(FRAME_COLORSCHEME + " Kilépés " + LINE_INPUT_COLORSCHEME);
+        messagePrint("A hírlevélre elfelejtettél feliratkozni :(");
+        messagePrint("Kilépés");
     }
 
-    private void finalOrder() {
-        printCart();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Véglegesíted a rendelést? (i/n) ");
-        String answer = scanner.nextLine();
-        if (answer.equals("i")) {
-            shopService.order();
-            System.out.println(FRAME_COLORSCHEME + " Köszönjük a megrendelést!" + LINE_INPUT_COLORSCHEME);
-            System.out.println(FRAME_COLORSCHEME + " Iratkozzon fel hírlevelünkre is, elárasztjuk spamekkel! " + LINE_INPUT_COLORSCHEME);
+    private void printProducts() {
+        String heading = String.format("%10s        %-24s%9s", "Cikkszám", "Termék neve", "Ár");
+        List<String> productRows = new ArrayList<>();
+        for (Product actual : shopService.getProductList()) {
+            productRows.add(String.format("%10s        %-24s%6s Ft", actual.getId(), actual.getName(), actual.getPrice()));
         }
-    }
-
-    private void decreaseAmount() {
-        printCart();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Melyk cikkszámú termék mennyiségét csökkentenéd? ");
-        long productId = Integer.parseInt(scanner.nextLine());
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Mennyiség: ");
-        int amount = -1 * Integer.parseInt(scanner.nextLine());
-        shopService.modifyAmount(productId, amount);
-        System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú termékből " + (-1 * amount) + " darabot kivettünk a kosárból." + LINE_INPUT_COLORSCHEME);
-    }
-
-    private void increaseAmount() {
-        printCart();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Melyk cikkszámú termék mennyiségét növelnéd? ");
-        long productId = Integer.parseInt(scanner.nextLine());
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Mennyiség: ");
-        int amount = Integer.parseInt(scanner.nextLine());
-        shopService.modifyAmount(productId, amount);
-        System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú termékből " + (-1 * amount) + " darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
-    }
-
-    private void deleteFromCart() {
-        printCart();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Törölni kívánt termék cikkszáma: ");
-        long productId = Integer.parseInt(scanner.nextLine());
-        shopService.removeItem(productId);
-        System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú terméket töröltük a kosárból." + LINE_INPUT_COLORSCHEME);
-    }
-
-    private void toCart() {
-        printCart();
-        printProducts();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Megvenni kívánt termék cikkszáma: ");
-        long productId = Integer.parseInt(scanner.nextLine());
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Mennyisége ");
-        int amount = Integer.parseInt(scanner.nextLine());
-        shopService.addItem(productId, amount);
-        System.out.println(FRAME_COLORSCHEME + " A " + productId + " cikkszámú termékből " + amount + " darabot betettünk a kosárba." + LINE_INPUT_COLORSCHEME);
+        TableForUX products = new TableForUX(66, productRows, List.of("Struktúraváltó Barkácsbolt Webshop termékei", heading));
+        products.print();
     }
 
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
+        String heading = String.format("%10s        %-24s%9s%13s%12s", "Cikkszám", "Termék neve", "Ár", "Mennyiség", "Érték");
         int sum = 0;
         for (Item actual : shopService.getUserCart().contentOfCart()) {
-            String temp = String.format("Cikkszám:%4s       %-24s  %6s Ft   %4s db   %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
-                    actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice());
-            cartRows.add(printToConsole.upToWidth("     " + temp, 88));
+            cartRows.add(String.format("%10s        %-24s%6s Ft%10s db %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
+                    actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice()));
             sum += actual.getSumPrice();
         }
-        cartRows.add(printToConsole.upToWidth("      " + "", 88));
-        String sumString = "A kosár összértéke: " + sum + " Ft";
-        cartRows.add(String.format("%84s  ", sumString));
+        cartRows.add(String.format("%86s", ""));
+        cartRows.add(String.format("%81s%5s", "A kosár összértéke: " + sum + " Ft", ""));
 
-        printToConsole.printRows("A kosár aktuális tartalma", null, cartRows, 88);
+        TableForUX cart = new TableForUX(88, cartRows, List.of("A kosár aktuális tartalma", heading));
+        cart.print();
     }
 
-    private void printProducts() {
-        System.out.println();
-        List<String> productRows = new ArrayList<>();
-        for (Product actual : shopService.getProductList()) {
-            String temp = String.format("Cikkszám:%4s      %-24s  %6s Ft", actual.getId(), actual.getName(), actual.getPrice());
-            productRows.add(printToConsole.upToWidth("      " + temp, 66));
+    private void putToCart() {
+        printCart();
+        printProducts();
+        List<String> input = inputsToList("Megvásárolni kívánt termék cikkszáma:", "Mennyiség:");
+        long productId = Integer.parseInt(input.get(0));
+        int amount = Integer.parseInt(input.get(1));
+        shopService.addItem(productId, amount);
+        messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName())
+                + " termékből " + highlightIt(amount) + " darabot betettél a kosárba.");
+    }
+
+    private void deleteFromCart() {
+        printCart();
+        long productId = Integer.parseInt(inputsToList("Törölni kívánt termék cikkszáma:").get(0));
+        String productToDelete = shopService.getItem(productId).getProduct().getName();
+        shopService.removeItem(productId);
+        messagePrint(" A(z) " + highlightIt(productToDelete) + " terméket kivetted a kosárból.");
+    }
+
+    private void increaseAmount() {
+        printCart();
+        List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
+        long productId = Integer.parseInt(input.get(0));
+        int amount = Integer.parseInt(input.get(1));
+        shopService.modifyAmount(productId, amount);
+        messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
+                + highlightIt(amount) + " darabbal növelted a kosárban.");
+    }
+
+    private void decreaseAmount() {
+        printCart();
+        List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
+        long productId = Integer.parseInt(input.get(0));
+        int amount = Integer.parseInt(input.get(1));
+        shopService.modifyAmount(productId, -1* amount);
+        messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
+                + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
+    }
+
+    private void finalizeOrder() {
+        printCart();
+        if (inputsToList("Véglegesíted a rendelést? (i/n)").get(0).equals("i")) {
+            shopService.order();
+            messagePrint("Köszönjük a megrendelést!");
+            messagePrint("Iratkozz fel hírlevelünkre, elárasztunk spamekkel!");
         }
-        printToConsole.printRows("Webshopunk termékei", null, productRows, 66);
     }
 
-    private void runLoginMenu() {
-        boolean exit = false;
-        do {
-            printMenu("Belépés csak regisztrált ügyfeleknek", MENUITEMS_LOGIN);
-            switch (getSelectedMenuItem(3)) {
-                case 1:
-                    Login();
-                    break;
-                case 2:
-                    registerUser();
-                    break;
-                case 3:
-                    exit = true;
-            }
-        } while (!exit);
-        System.out.println(FRAME_COLORSCHEME + " Kilépés " + LINE_INPUT_COLORSCHEME);
+    private void frameAndTextPrint(String text) {
+        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " " + text + " ");
     }
 
-    private void registerUser() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println(FRAME_COLORSCHEME + " Regisztráció " + LINE_INPUT_COLORSCHEME);
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Felhasználónév: ");
-        String userName = scanner.nextLine();
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Jelszó: ");
-        String password = scanner.nextLine();
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Email: ");
-        String email = scanner.nextLine();
-        shopService.registerUser(userName, password, email);
+    private void messagePrint(String text) {
+        System.out.println(FRAME_COLORSCHEME + " " + text + " " + LINE_INPUT_COLORSCHEME);
     }
 
-    private void Login() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println(FRAME_COLORSCHEME + " Belépés " + LINE_INPUT_COLORSCHEME);
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Felhasználónév: ");
-        String userName = scanner.nextLine();
-        System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Jelszó: ");
-        String password = scanner.nextLine();
-        shopService.logIn(userName, password);
-        runShoppingMenu();
+    private String highlightIt(String text) {
+        return UNDERLINED_AND_BOLD_COLORSCHEME + text + NOT_UNDERLINED_AND_BOLD_COLORSCHEME;
     }
 
-    private int getSelectedMenuItem(int menuLinesNumber) {
-        Scanner scanner = new Scanner(System.in);
-        int selectedMenuItem = 0;
-        do {
-            System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Válassz a menüből! ");
-            String s = scanner.nextLine();
-            try {
-                selectedMenuItem = Integer.parseInt(s);
-            } catch (IllegalArgumentException iae) {
-                selectedMenuItem = 0;
-            }
-            if (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber) {
-                System.out.println(FRAME_COLORSCHEME + " Nincs ilyen menüpont! " + LINE_INPUT_COLORSCHEME);
-            }
-        } while (selectedMenuItem <= 0 || selectedMenuItem > menuLinesNumber);
-        return selectedMenuItem;
+    private String highlightIt(int number) {
+        return UNDERLINED_AND_BOLD_COLORSCHEME + number + NOT_UNDERLINED_AND_BOLD_COLORSCHEME;
     }
-
-    private void printMenu(String heading, List<String> menuItems) {
-        List<String> printMenuItems = new ArrayList<>();
-        System.out.println();
-        for (String actual : menuItems) {
-            printMenuItems.add(printToConsole.centerText(actual, 76));
-        }
-        printToConsole.printRows("M E N Ü", heading, printMenuItems, 78);
-    }
-
 }
+
 
