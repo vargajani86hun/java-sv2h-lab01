@@ -53,7 +53,7 @@ public class WebShopMain {
     private void runLoginMenu() {
         boolean exit = false;
         do {
-            TableForUX loginMenu = new TableForUX(76, MENUITEMS_LOGIN, List.of("Belépés csak regisztrált ügyfeleknek", "M E N Ü"));
+            TableForUX loginMenu = new TableForUX(51, MENUITEMS_LOGIN, List.of("Belépés csak regisztrált ügyfeleknek", "M E N Ü"));
             loginMenu.print();
             switch (getSelectedMenuItem(MENUITEMS_LOGIN.size())) {
                 case 1:
@@ -143,7 +143,6 @@ public class WebShopMain {
                     exit = true;
             }
         } while (!exit);
-        messagePrint("A hírlevélre elfelejtettél feliratkozni :(");
         messagePrint("Kilépés");
     }
 
@@ -159,7 +158,6 @@ public class WebShopMain {
 
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
-        String heading = String.format("%10s        %-24s%9s%13s%12s", "Cikkszám", "Termék neve", "Ár", "Mennyiség", "Érték");
         int sum = 0;
         for (Item actual : shopService.getUserCart().contentOfCart()) {
             cartRows.add(String.format("%10s        %-24s%6s Ft%10s db %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
@@ -168,7 +166,7 @@ public class WebShopMain {
         }
         cartRows.add(String.format("%86s", ""));
         cartRows.add(String.format("%81s%5s", "A kosár összértéke: " + sum + " Ft", ""));
-
+        String heading = String.format("%10s        %-24s%9s%13s%12s", "Cikkszám", "Termék neve", "Ár", "Mennyiség", "Érték");
         TableForUX cart = new TableForUX(88, cartRows, List.of("A kosár aktuális tartalma", heading));
         cart.print();
     }
