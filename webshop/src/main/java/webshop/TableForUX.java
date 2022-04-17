@@ -21,13 +21,13 @@ public class TableForUX {
     }
 
     public void print() {
+        System.out.println();
         printHeader();
         printBody();
         printFooter();
     }
 
     private void printHeader() {
-        System.out.println();
         printSolidLine();
         for (String actual : headings) {
             frameAndTextPrint(centerText(actual));
@@ -50,8 +50,7 @@ public class TableForUX {
     }
 
     private String centerText(String text) {
-        StringBuilder resultSB = new StringBuilder();
-        String spaces = resultSB.append(" ".repeat((width - text.length()) / 2)).toString();
+        String spaces = " ".repeat((width - (width % 2) - text.length()) / 2);
         return text.length() % 2 == 0 ? spaces + text + spaces : spaces + " " + text + spaces;
     }
 
