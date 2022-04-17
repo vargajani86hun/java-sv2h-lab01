@@ -73,7 +73,8 @@ public class WebShopMain {
         messagePrint("Regisztráció");
         List<String> input = inputsToList("Felhasználónév:", "Jelszó:", "Email:");
         shopService.registerUser(input.get(0), input.get(1), input.get(2));
-        messagePrint("Kedves " + input.get(0) + ", a regisztráció sikeres volt, kedvezményért iratkozz fel hírlevelünkre is!");
+        messagePrint("Helló " + input.get(0) + ", a regisztráció sikeres volt.");
+        messagePrint("Extra Kedvezményekért iratkozz fel hírlevelünkre is!");
     }
 
     private void Login() {
