@@ -1,7 +1,5 @@
 package webshop;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TableForUX {
@@ -30,7 +28,7 @@ public class TableForUX {
     private void printHeader() {
         printSolidLine();
         for (String actual : headings) {
-            frameAndTextPrint(centerText(actual));
+            frameAndHeadingPrint(actual);
             printSolidLine();
         }
     }
@@ -38,9 +36,9 @@ public class TableForUX {
     private void printBody() {
         for (int i = 0; i <= lines.size() - 1; i++) {
             if (i % 2 == 0) {
-                frameAndTextPrint(ROW_EVEN_COLORSCHEME + centerText(lines.get(i)) + FRAME_COLORSCHEME);
+                frameAndEvenPrint(lines.get(i));
             } else {
-                frameAndTextPrint(ROW_ODD_COLORSCHEME + centerText(lines.get(i)) + FRAME_COLORSCHEME);
+                frameAndOddPrint(lines.get(i));
             }
         }
     }
@@ -54,12 +52,20 @@ public class TableForUX {
         return text.length() % 2 == 0 ? spaces + text + spaces : spaces + " " + text + spaces;
     }
 
-    private void printSolidLine() {
-        frameAndTextPrint(centerText(""));
+    private void frameAndOddPrint(String text) {
+        System.out.println(FRAME_COLORSCHEME + " "+ ROW_ODD_COLORSCHEME + centerText(text) + FRAME_COLORSCHEME+" " + DEFAULT_COLORSCHEME);
     }
 
-    private void frameAndTextPrint(String text) {
-        System.out.println(FRAME_COLORSCHEME + " " + text + " " + DEFAULT_COLORSCHEME);
+    private void frameAndEvenPrint(String text) {
+        System.out.println(FRAME_COLORSCHEME + " "+ ROW_EVEN_COLORSCHEME + centerText(text) + FRAME_COLORSCHEME+" " + DEFAULT_COLORSCHEME);
+    }
+
+    private void printSolidLine() {
+        frameAndHeadingPrint("");
+    }
+
+    private void frameAndHeadingPrint(String text) {
+        System.out.println(FRAME_COLORSCHEME + " " + centerText(text) + " " + DEFAULT_COLORSCHEME);
     }
 }
 
