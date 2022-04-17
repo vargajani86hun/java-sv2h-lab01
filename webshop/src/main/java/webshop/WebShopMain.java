@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class WebShopMain {
     private static final String FRAME_COLORSCHEME = "\u001B[30;43m";
     private static final String LINE_INPUT_COLORSCHEME = "\u001B[33;49m";
+    private static final String ERROR_COLORSCHEME = "\u001B[30;41m";
     private static final List<String> MENUITEMS_LOGIN = Arrays.asList(
             "[1] Belépés",
             "[2] Regisztráció",
@@ -39,7 +40,7 @@ public class WebShopMain {
         try {
             dataSource.setUrl("jdbc:mariadb://localhost:3306/webshop?useUnicode=true");
             dataSource.setUser("root");
-            dataSource.setPassword("klaradb");
+            dataSource.setPassword("Jani1234");
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot reach DataBase!", sqle);
         }
@@ -203,8 +204,12 @@ public class WebShopMain {
         String userName = scanner.nextLine();
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " Jelszó: ");
         String password = scanner.nextLine();
-        shopService.logIn(userName, password);
-        runShoppingMenu();
+        try {
+            shopService.logIn(userName, password);
+            runShoppingMenu();
+        } catch (IllegalArgumentException iae) {
+            System.out.println(FRAME_COLORSCHEME + " " + ERROR_COLORSCHEME + iae.getMessage() + LINE_INPUT_COLORSCHEME);
+        }
     }
 
     private int getSelectedMenuItem(int menuLinesNumber) {
