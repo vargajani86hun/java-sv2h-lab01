@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 
 public class WebShopMain {
-    private final String UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[4;1m";
-    private final String NOT_UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[24;22m";
+    private static final String UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[4;1m";
+    private static final String NOT_UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[24;22m";
     private static final String FRAME_COLORSCHEME = "\u001B[30;43m";
     private static final String LINE_INPUT_COLORSCHEME = "\u001B[33;49m";
     private static final List<String> MENUITEMS_LOGIN = Arrays.asList(
