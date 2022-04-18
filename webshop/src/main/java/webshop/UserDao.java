@@ -59,4 +59,14 @@ public class UserDao {
             return Optional.of(findUsers.get(0));
         }
     }
+
+    public List<User> getRegisteredUsers() {
+        return jdbcTemplate.query("SELECT * FROM users;", (rs, rowNum) -> {
+            long id = rs.getLong("id");
+            String userName = rs.getString("user_name");
+            int password = rs.getInt("password");
+            String email = rs.getString("email");
+            return new User(id, userName, password, email);
+        });
+    }
 }

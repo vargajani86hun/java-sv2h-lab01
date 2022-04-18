@@ -31,6 +31,10 @@ public class Cart {
         items.remove(item);
     }
 
+    public int getTotalPrice() {
+        return items.stream().mapToInt(Item::getSumPrice).sum();
+    }
+
     public void emptyCart() {
         items.clear();
     }
