@@ -159,14 +159,12 @@ public class WebShopMain {
 
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
-        int sum = 0;
         for (Item actual : shopService.getUserCart().contentOfCart()) {
             cartRows.add(String.format("%10s        %-24s%6s Ft%10s db %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
                     actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice()));
-            sum += actual.getSumPrice();
         }
         cartRows.add(String.format("%86s", ""));
-        cartRows.add(String.format("%81s%5s", "A kosár összértéke: " + sum + " Ft", ""));
+        cartRows.add(String.format("%81s%5s", "A kosár összértéke: " + shopService.getUserCart().getTotalPrice() + " Ft", ""));
         String heading = String.format("%10s        %-24s%9s%13s%12s", "Cikkszám", "Termék neve", "Ár", "Mennyiség", "Érték");
         TableForUX cart = new TableForUX(88, cartRows, List.of("A kosár aktuális tartalma", heading));
         cart.print();
