@@ -19,7 +19,7 @@ class ShopServiceTest {
         try {
             dataSource.setUrl("jdbc:mariadb://localhost:3306/webshop_test?useUnicode=true");
             dataSource.setUser("root");
-            dataSource.setPassword("training");
+            dataSource.setPassword("klaradb");
         } catch (
                 SQLException sqle) {
             throw new IllegalStateException("Cannot reach DataBase!", sqle);
