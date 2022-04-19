@@ -194,7 +194,6 @@ public class WebShopMain {
         List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
-//        shopService.modifyAmount(productId, amount);
         shopService.increaseAmount(productId,amount);
         messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
                 + highlightIt(amount) + " darabbal növelted a kosárban.");
@@ -206,13 +205,18 @@ public class WebShopMain {
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
         shopService.decreaseAmount(productId,amount);
-//        shopService.modifyAmount(productId, -1* amount);
         messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
                 + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
     }
 
     private void finalizeOrder() {
         printCart();
+        if (shopService.getUserCart().contentOfCart().size() == 0) {
+            frameAndTextPrint("");
+            System.out.println();
+            messagePrint("Üres a kosár - nem lehetséges a megrendelés véglegesítése!");
+            return;
+        }
         if (inputsToList("Véglegesíted a rendelést? (i/n)").get(0).equals("i")) {
             shopService.order();
             messagePrint("Köszönjük a megrendelést!");
