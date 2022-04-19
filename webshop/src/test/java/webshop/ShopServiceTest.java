@@ -105,6 +105,17 @@ class ShopServiceTest {
     }
 
     @Test
+    void testDecreaseAmountWithMoreThanActual() {
+        long productId = shopService.getProductList().get(5).getId();
+        shopService.registerUser("Zöld Piroska", "aksoriP dlöZ", "zold@piroska.hu");
+        shopService.logIn("Zöld Piroska", "aksoriP dlöZ");
+        shopService.addItem(productId, 3);
+        assertEquals(1, shopService.getContentOfCart().size());
+        shopService.decreaseAmount(productId, 4);
+        assertTrue(shopService.getContentOfCart().isEmpty());
+    }
+
+    @Test
     void testGetTotalPrice() {
         long productId1 = shopService.getProductList().get(5).getId();
         long productId2 = shopService.getProductList().get(7).getId();
