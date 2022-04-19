@@ -17,7 +17,7 @@ class ShopServiceTest {
     @BeforeEach
     void initDataBase() {
         try {
-            dataSource.setUrl("jdbc:mariadb://localhost:3306/webshop?useUnicode=true");
+            dataSource.setUrl("jdbc:mariadb://localhost:3306/webshop_test?useUnicode=true");
             dataSource.setUser("root");
             dataSource.setPassword("training");
         } catch (

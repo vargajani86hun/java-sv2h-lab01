@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ShopService {
@@ -21,7 +22,7 @@ public class ShopService {
         productDao = new ProductDao(dataSource);
         userDao = new UserDao(dataSource);
         orderDao = new OrderDao(dataSource);
-        fillProducts();
+        fillProductsTable();
         productList = productDao.getProducts();
     }
 
@@ -39,7 +40,7 @@ public class ShopService {
         validator.validateExistUserName(name);
         User userFound = userDao.findUserByName(name).get();
         validator.validatePasswordLogIn(name, password, userFound);
-            user = userFound;
+        user = userFound;
     }
 
     public void addItem(long id, int amount) {
@@ -52,18 +53,29 @@ public class ShopService {
         user.getCart().removeItem(item);
     }
 
-    private Item getItem(long id) {
+    public Item getItem(long id) {
         return user.getCart().getItems().stream().filter(item -> id == item.getProduct().getId()).toList().get(0);
     }
 
-    public void modifyAmount(Long id, int amount) {
+    public void modifyAmount(long id, int amount) {
         Item item = getItem(id);
         item.modifyAmount(amount);
     }
 
+    public void increaseAmount(long id, int amount) {
+        Item item = getItem(id);
+        item.modifyAmount(amount);
+    }
+
+    public void decreaseAmount(long id, int amount) {
+        Item item = getItem(id);
+        item.modifyAmount(-amount);
+    }
+
+
     public void order() {
         long orderId = orderDao.insertOrder(user.getId());
-        for (Item item: user.getCart().getItems()) {
+        for (Item item : user.getCart().getItems()) {
             orderDao.insertItem(orderId, item.getProduct().getId(), item.getAmount());
         }
         user.getCart().emptyCart();
@@ -77,23 +89,26 @@ public class ShopService {
         }
     }
 
-    public void fillProducts() {
-        for (String line: readFile(path)) {
+    private void fillProductsTable() {
+        List<Product> existingProducts = productDao.getProducts();
+        for (String line : readFile(path)) {
             String[] parts = line.split(";");
             String name = parts[0];
             int price = Integer.parseInt(parts[1]);
             Product product = new Product(name, price);
-            productDao.insertProduct(product);
+            if (!existingProducts.contains(product)) {
+                productDao.insertProduct(product);
+            }
         }
     }
 
     public List<Product> getProductList() {
-        return productList;
+        return Collections.unmodifiableList(productList);
     }
 
     public List<String> getProductStringList() {
         List<String> productListString = new ArrayList<>();
-        for (Product product: productList) {
+        for (Product product : productList) {
             productListString.add(String.format("%d %s %d", product.getId(), product.getName(), product.getPrice()));
         }
         return productListString;
@@ -108,11 +123,23 @@ public class ShopService {
         }
     }
 
+    public String getUserName() {
+        return user.getName();
+    }
+
     public Cart getUserCart() {
         return user.getCart();
     }
 
-    public String getUserName() {
-        return user.getName();
+    public List<Item> getContentOfCart() {
+        return user.getCart().contentOfCart();
+    }
+
+    public int getTotalPrice() {
+        return user.getCart().getTotalPrice();
+    }
+
+    public List<User> getRegisteredUsers() {
+        return Collections.unmodifiableList(userDao.getRegisteredUsers());
     }
 }
