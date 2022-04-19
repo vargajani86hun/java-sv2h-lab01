@@ -69,7 +69,11 @@ public class ShopService {
 
     public void decreaseAmount(long id, int amount) {
         Item item = getItem(id);
-        item.modifyAmount(-amount);
+        if (amount < item.getAmount()) {
+            item.modifyAmount(-amount);
+        } else {
+            removeItem(id);
+        }
     }
 
 
