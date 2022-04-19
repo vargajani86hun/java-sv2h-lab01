@@ -204,8 +204,9 @@ public class WebShopMain {
         List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
+        String productToDecrease = shopService.getItem(productId).getProduct().getName();
         shopService.decreaseAmount(productId,amount);
-        messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
+        messagePrint(" A(z) " + highlightIt(productToDecrease) + " termék mennyiségét "
                 + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
     }
 
