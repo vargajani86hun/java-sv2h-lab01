@@ -186,7 +186,7 @@ public class WebShopMain {
         long productId = Integer.parseInt(inputsToList("Törölni kívánt termék cikkszáma:").get(0));
         String productToDelete = shopService.getItem(productId).getProduct().getName();
         shopService.removeItem(productId);
-        messagePrint(" A(z) " + highlightIt(productToDelete) + " terméket kivetted a kosárból.");
+        messagePrint(" A(z) " + highlightIt(productToDelete) + " termékeket kivetted a kosárból.");
     }
 
     private void increaseAmount() {
@@ -194,7 +194,8 @@ public class WebShopMain {
         List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
-        shopService.modifyAmount(productId, amount);
+//        shopService.modifyAmount(productId, amount);
+        shopService.increaseAmount(productId,amount);
         messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
                 + highlightIt(amount) + " darabbal növelted a kosárban.");
     }
@@ -204,7 +205,8 @@ public class WebShopMain {
         List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
-        shopService.modifyAmount(productId, -1* amount);
+        shopService.decreaseAmount(productId,amount);
+//        shopService.modifyAmount(productId, -1* amount);
         messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
                 + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
     }
