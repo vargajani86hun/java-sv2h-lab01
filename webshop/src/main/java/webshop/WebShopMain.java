@@ -159,7 +159,7 @@ public class WebShopMain {
 
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
-        for (Item actual : shopService.getUserCart().contentOfCart()) {
+        for (Item actual : shopService.getUserCart().getItems()) {
             cartRows.add(String.format("%10s        %-24s%6s Ft%10s db %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
                     actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice()));
         }
@@ -212,7 +212,7 @@ public class WebShopMain {
 
     private void finalizeOrder() {
         printCart();
-        if (shopService.getUserCart().contentOfCart().size() == 0) {
+        if (shopService.getUserCart().getItems().size() == 0) {
             frameAndTextPrint("");
             System.out.println();
             messagePrint("Üres a kosár - nem lehetséges a megrendelés véglegesítése!");

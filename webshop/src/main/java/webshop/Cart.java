@@ -1,6 +1,7 @@
 package webshop;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Cart {
@@ -8,11 +9,7 @@ public class Cart {
     private List<Item> items = new ArrayList<>();
 
     public List<Item> getItems() {
-        return items;
-    }
-
-    public List<Item> contentOfCart() {
-        return items;
+        return Collections.unmodifiableList(items);
     }
 
     public List<String> contentOfCartStringFormat() {
