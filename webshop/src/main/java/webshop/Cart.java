@@ -21,7 +21,14 @@ public class Cart {
     }
 
     public void addItem(Item item) {
-        items.add(item);
+        if (items.stream().map(Item::getProduct).map(Product::getName)
+                .noneMatch(s -> s.equals(item.getProduct().getName()))) {
+            items.add(item);
+        } else {
+            items.stream()
+                    .filter(i -> i.getProduct().getName().equals(item.getProduct().getName()))
+                    .toList().get(0).modifyAmount(item.getAmount());
+        }
     }
 
     public void removeItem(Item item) {
