@@ -30,7 +30,10 @@ class CartTest {
     void testAddNewItem() {
         cart.addItem(new Item(hammer, 2));
 
-        assertEquals(2, cart.getItems().size());
+        assertAll(
+                () -> assertEquals(2, cart.getItems().size()),
+                () -> assertEquals(23100, cart.getTotalPrice())
+        );
     }
 
     @Test
@@ -41,7 +44,8 @@ class CartTest {
         assertAll(
                 () -> assertEquals(2, cart.getItems().size()),
                 () -> assertEquals(saw, cart.getItems().get(1).getProduct()),
-                () -> assertEquals(5, cart.getItems().get(1).getAmount())
+                () -> assertEquals(5, cart.getItems().get(1).getAmount()),
+                () -> assertEquals(34100, cart.getTotalPrice())
         );
     }
 }
