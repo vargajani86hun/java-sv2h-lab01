@@ -21,8 +21,7 @@ public class Cart {
     }
 
     public void addItem(Item item) {
-        if (items.stream().map(Item::getProduct).map(Product::getName)
-                .noneMatch(s -> s.equals(item.getProduct().getName()))) {
+        if (items.stream().noneMatch(i -> i.getProduct().equals(item.getProduct()))) {
             items.add(item);
         } else {
             items.stream()
