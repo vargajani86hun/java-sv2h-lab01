@@ -73,11 +73,11 @@ public class WebShopMain {
         messagePrint("Regisztráció");
         List<String> input = inputsToList("Felhasználónév:", "Jelszó:", "Email:");
         try {
-        shopService.registerUser(input.get(0), input.get(1), input.get(2));
-        messagePrint("Helló " + input.get(0) + ", a regisztráció sikeres volt.");
-        messagePrint("Extra Kedvezményekért iratkozz fel hírlevelünkre is!");
+            shopService.registerUser(input.get(0), input.get(1), input.get(2));
+            messagePrint("Helló " + input.get(0) + ", a regisztráció sikeres volt.");
+            messagePrint("Extra Kedvezményekért iratkozz fel hírlevelünkre is!");
         } catch (IllegalArgumentException iae) {
-            messagePrint("Hiba a regisztáció során: "+iae.getMessage());
+            messagePrint("Hiba a regisztáció során: " + iae.getMessage());
         }
     }
 
@@ -85,8 +85,8 @@ public class WebShopMain {
         messagePrint("Belépés");
         List<String> input = inputsToList("Felhasználónév:", "Jelszó:");
         try {
-        shopService.logIn(input.get(0), input.get(1));
-        runShoppingMenu();
+            shopService.logIn(input.get(0), input.get(1));
+            runShoppingMenu();
         } catch (IllegalArgumentException iae) {
             messagePrint(iae.getMessage());
         }
@@ -168,7 +168,7 @@ public class WebShopMain {
 
     private void printCart() {
         List<String> cartRows = new ArrayList<>();
-        for (Item actual : shopService.getUserCart().contentOfCart()) {
+        for (Item actual : shopService.getContentOfCart()) {
             cartRows.add(String.format("%10s        %-24s%6s Ft%10s db %8s Ft", actual.getProduct().getId(), actual.getProduct().getName(),
                     actual.getProduct().getPrice(), actual.getAmount(), actual.getSumPrice()));
         }
