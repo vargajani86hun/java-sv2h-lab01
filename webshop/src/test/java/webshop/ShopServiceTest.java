@@ -37,7 +37,7 @@ class ShopServiceTest {
         assertEquals("Nagy Sándor", shopService.getRegisteredUsers().get(0).getName());
         assertEquals("nagy@sandor.hu", shopService.getRegisteredUsers().get(0).getEmail());
         assertEquals(("Nagy Sándor" + "rodnáS ygaN").hashCode(), shopService.getRegisteredUsers().get(0).getPassword());
-        assertTrue(shopService.getRegisteredUsers().get(0).getCart().contentOfCart().isEmpty());
+        assertTrue(shopService.getRegisteredUsers().get(0).getCart().getItems().isEmpty());
     }
 
     @Test

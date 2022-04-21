@@ -136,7 +136,7 @@ public class ShopService {
     }
 
     public List<Item> getContentOfCart() {
-        return user.getCart().contentOfCart();
+        return user.getCart().getItems();
     }
 
     public int getTotalPrice() {
