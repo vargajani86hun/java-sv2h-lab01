@@ -48,4 +48,30 @@ class CartTest {
                 () -> assertEquals(34100, cart.getTotalPrice())
         );
     }
+
+    @Test
+    void testRemoveItem() {
+        cart.removeItem(new Item(drill, 1));
+
+        assertTrue(cart.getItems().isEmpty());
+    }
+
+    @Test
+    void testGetTotalPrice() {
+        cart.addItem(new Item(hammer, 1));
+        cart.addItem(new Item(saw, 2));
+        cart.addItem(new Item(drill, 1));
+
+        assertEquals(45100, cart.getTotalPrice());
+    }
+
+    @Test
+    void testEmptyCart() {
+        cart.addItem(new Item(hammer, 1));
+        cart.addItem(new Item(saw, 2));
+        cart.addItem(new Item(drill, 1));
+        cart.emptyCart();
+
+        assertTrue(cart.getItems().isEmpty());
+    }
 }
