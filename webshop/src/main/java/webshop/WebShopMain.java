@@ -191,7 +191,7 @@ public class WebShopMain {
             messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName())
                     + " termékből " + highlightIt(amount) + " darabot betettél a kosárba.");
         } catch (IllegalArgumentException iae) {
-            errorMessagePrint(iae.getMessage() + " A " + highlightIt((int) productId) + " cikkszámú termék nem található a webáruházban!");
+            errorMessagePrint(iae.getMessage() + " A " + highlightIt(productId) + " cikkszámú termék nem található a webáruházban!");
         }
     }
 
@@ -201,9 +201,13 @@ public class WebShopMain {
             return;
         }
         long productId = Integer.parseInt(inputsToList("Törölni kívánt termék cikkszáma:").get(0));
-        String productToDelete = shopService.getItem(productId).getProduct().getName();
-        shopService.removeItem(productId);
-        errorMessagePrint(" A(z) " + highlightIt(productToDelete) + " termékeket kivetted a kosárból.");
+        try {
+            String productToDelete = shopService.getItem(productId).getProduct().getName();
+            shopService.removeItem(productId);
+            messagePrint(" A(z) " + highlightIt(productToDelete) + " termékeket kivetted a kosárból.");
+        } catch (IllegalArgumentException iae) {
+            errorMessagePrint("Hiba a termék eltávolítása során! " + iae.getMessage() + highlightIt(productId) + " id.");
+        }
     }
 
     private void increaseAmount() {
@@ -215,9 +219,13 @@ public class WebShopMain {
         List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
-        shopService.increaseAmount(productId, amount);
-        messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
-                + highlightIt(amount) + " darabbal növelted a kosárban.");
+        try {
+            shopService.increaseAmount(productId, amount);
+            messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
+                    + highlightIt(amount) + " darabbal növelted a kosárban.");
+        } catch (IllegalArgumentException iae) {
+            errorMessagePrint("Hiba a termék darabszámának növelése során! " + iae.getMessage() + highlightIt(productId) + " id.");
+        }
     }
 
     private void decreaseAmount() {
@@ -228,10 +236,14 @@ public class WebShopMain {
         List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
-        String productToDecrease = shopService.getItem(productId).getProduct().getName();
-        shopService.decreaseAmount(productId, amount);
-        messagePrint(" A(z) " + highlightIt(productToDecrease) + " termék mennyiségét "
-                + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
+        try {
+            String productToDecrease = shopService.getItem(productId).getProduct().getName();
+            shopService.decreaseAmount(productId, amount);
+            messagePrint(" A(z) " + highlightIt(productToDecrease) + " termék mennyiségét "
+                    + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
+        } catch (IllegalArgumentException iae) {
+            errorMessagePrint("Hiba a termék darabszámának csökkentése során! " + iae.getMessage() + highlightIt(productId) + " id.");
+        }
     }
 
     private void finalizeOrder() {
@@ -273,7 +285,7 @@ public class WebShopMain {
         return UNDERLINED_AND_BOLD_COLORSCHEME + text + NOT_UNDERLINED_AND_BOLD_COLORSCHEME;
     }
 
-    private String highlightIt(int number) {
+    private String highlightIt(long number) {
         return UNDERLINED_AND_BOLD_COLORSCHEME + number + NOT_UNDERLINED_AND_BOLD_COLORSCHEME;
     }
 }
