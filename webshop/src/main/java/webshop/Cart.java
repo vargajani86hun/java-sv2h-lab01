@@ -12,14 +12,6 @@ public class Cart {
         return Collections.unmodifiableList(items);
     }
 
-    public List<String> contentOfCartStringFormat() {
-        List<String> contentOfCart = new ArrayList<>();
-        for (Item item: items) {
-            contentOfCart.add(String.format("%d %s %d", item.getProduct().getId(), item.getProduct().getName(), item.getAmount()));
-        }
-        return contentOfCart;
-    }
-
     public void addItem(Item item) {
         if (items.stream().noneMatch(i -> i.getProduct().equals(item.getProduct()))) {
             items.add(item);
