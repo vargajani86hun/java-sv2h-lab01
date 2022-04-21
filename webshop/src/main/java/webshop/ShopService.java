@@ -45,8 +45,13 @@ public class ShopService {
 
     public void addItem(long id, int amount) {
         Product product = findProductById(id);
-        user.getCart().addItem(new Item(product, amount));
+        if (user.getCart().hasProduct(id)) {
+            increaseAmount(id, amount);
+        } else {
+            user.getCart().addItem(new Item(product, amount));
+        }
     }
+
 
     public void removeItem(long id) {
         Item item = getItem(id);
@@ -148,4 +153,6 @@ public class ShopService {
     public List<User> getRegisteredUsers() {
         return Collections.unmodifiableList(userDao.getRegisteredUsers());
     }
+
+
 }
