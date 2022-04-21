@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 
 public class WebShopMain {
+    private static final String ERROR_COLORSCHEME = "\u001B[30;41m";
     private static final String UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[4;1m";
     private static final String NOT_UNDERLINED_AND_BOLD_COLORSCHEME = "\u001B[24;22m";
     private static final String FRAME_COLORSCHEME = "\u001B[30;43m";
@@ -77,7 +78,7 @@ public class WebShopMain {
             messagePrint("Helló " + input.get(0) + ", a regisztráció sikeres volt.");
             messagePrint("Extra Kedvezményekért iratkozz fel hírlevelünkre is!");
         } catch (IllegalArgumentException iae) {
-            messagePrint("Hiba a regisztáció során: " + iae.getMessage());
+            errorMessagePrint("Hiba a regisztáció során: " + iae.getMessage());
         }
     }
 
@@ -88,7 +89,7 @@ public class WebShopMain {
             shopService.logIn(input.get(0), input.get(1));
             runShoppingMenu();
         } catch (IllegalArgumentException iae) {
-            messagePrint(iae.getMessage());
+            errorMessagePrint(iae.getMessage());
         }
 
     }
@@ -190,7 +191,7 @@ public class WebShopMain {
             messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName())
                     + " termékből " + highlightIt(amount) + " darabot betettél a kosárba.");
         } catch (IllegalArgumentException iae) {
-            messagePrint(iae.getMessage() + " A " + highlightIt((int) productId) + " cikkszámú termék nem található a webáruházban!");
+            errorMessagePrint(iae.getMessage() + " A " + highlightIt((int) productId) + " cikkszámú termék nem található a webáruházban!");
         }
     }
 
@@ -202,7 +203,7 @@ public class WebShopMain {
         long productId = Integer.parseInt(inputsToList("Törölni kívánt termék cikkszáma:").get(0));
         String productToDelete = shopService.getItem(productId).getProduct().getName();
         shopService.removeItem(productId);
-        messagePrint(" A(z) " + highlightIt(productToDelete) + " termékeket kivetted a kosárból.");
+        errorMessagePrint(" A(z) " + highlightIt(productToDelete) + " termékeket kivetted a kosárból.");
     }
 
     private void increaseAmount() {
@@ -249,7 +250,7 @@ public class WebShopMain {
         if (shopService.getContentOfCart().size() == 0) {
             frameAndTextPrint("");
             System.out.println();
-            messagePrint(s);
+            errorMessagePrint(s);
             return true;
         }
         return false;
@@ -257,6 +258,11 @@ public class WebShopMain {
 
     private void frameAndTextPrint(String text) {
         System.out.print(FRAME_COLORSCHEME + " " + LINE_INPUT_COLORSCHEME + " " + text + " ");
+    }
+
+
+    private void errorMessagePrint(String text) {
+        System.out.println(ERROR_COLORSCHEME + " " + text + " " + LINE_INPUT_COLORSCHEME);
     }
 
     private void messagePrint(String text) {
