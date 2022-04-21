@@ -1,5 +1,7 @@
 package webshop;
 
+import java.util.Objects;
+
 public class Item {
     private Product product;
     private int amount;
@@ -30,5 +32,17 @@ public class Item {
 
     public int getSumPrice() {
         return sumPrice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Item item)) return false;
+        return Objects.equals(product, item.product);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(product);
     }
 }
