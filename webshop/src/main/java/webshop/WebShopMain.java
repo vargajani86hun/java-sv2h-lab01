@@ -122,6 +122,24 @@ public class WebShopMain {
         return result;
     }
 
+    private List<Long> inputsToLongList(String... texts) {
+        Scanner scanner = new Scanner(System.in);
+        List<Long> result = new ArrayList<>();
+        int i = 0;
+        String input = null;
+        do {
+            frameAndTextPrint(texts[i]);
+            try {
+                input = scanner.nextLine();
+                result.add(Long.parseLong(input));
+                i++;
+            } catch (NumberFormatException nfe) {
+                errorMessagePrint("Hibásan megadott számformátum: " + highlightIt(input));
+            }
+        } while (i <= texts.length-1);
+        return result;
+    }
+
     private void runShoppingMenu() {
         boolean exit = false;
         do {
@@ -179,13 +197,12 @@ public class WebShopMain {
         TableForUX cart = new TableForUX(88, cartRows, List.of("A kosár aktuális tartalma", heading));
         cart.print();
     }
-
     private void putToCart() {
         printCart();
         printProducts();
-        List<String> input = inputsToList("Megvásárolni kívánt termék cikkszáma:", "Mennyiség:");
-        long productId = Integer.parseInt(input.get(0));
-        int amount = Integer.parseInt(input.get(1));
+        List<Long> input = inputsToLongList("Megvásárolni kívánt termék cikkszáma:", "Mennyiség:");
+        Long productId = input.get(0);
+        int amount = input.get(1).intValue();
         try {
             shopService.addItem(productId, amount);
             messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName())
@@ -200,7 +217,7 @@ public class WebShopMain {
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges kivenni belőle terméket!")) {
             return;
         }
-        long productId = Integer.parseInt(inputsToList("Törölni kívánt termék cikkszáma:").get(0));
+        long productId = inputsToLongList("Törölni kívánt termék cikkszáma:").get(0);
         try {
             String productToDelete = shopService.getItem(productId).getProduct().getName();
             shopService.removeItem(productId);
@@ -215,10 +232,9 @@ public class WebShopMain {
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges növelni benne a termékek darabszámát!")) {
             return;
         }
-
-        List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
-        long productId = Integer.parseInt(input.get(0));
-        int amount = Integer.parseInt(input.get(1));
+        List<Long> input = inputsToLongList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
+        long productId = input.get(0);
+        int amount = input.get(1).intValue();
         try {
             shopService.increaseAmount(productId, amount);
             messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
@@ -233,9 +249,9 @@ public class WebShopMain {
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges csökkenteni benne a termékek darabszámát!")) {
             return;
         }
-        List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
-        long productId = Integer.parseInt(input.get(0));
-        int amount = Integer.parseInt(input.get(1));
+        List<Long> input = inputsToLongList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
+        long productId = input.get(0);
+        int amount = input.get(1).intValue();
         try {
             String productToDecrease = shopService.getItem(productId).getProduct().getName();
             shopService.decreaseAmount(productId, amount);
@@ -259,7 +275,7 @@ public class WebShopMain {
     }
 
     private boolean checkIfCartIsEmptyAndMessage(String s) {
-        if (shopService.getContentOfCart().size() == 0) {
+        if (shopService.getContentOfCart().isEmpty()) {
             frameAndTextPrint("");
             System.out.println();
             errorMessagePrint(s);
