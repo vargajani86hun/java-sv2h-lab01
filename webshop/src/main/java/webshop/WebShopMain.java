@@ -136,7 +136,7 @@ public class WebShopMain {
             } catch (NumberFormatException nfe) {
                 errorMessagePrint("Hibásan megadott számformátum: " + highlightIt(input));
             }
-        } while (i <= texts.length-1);
+        } while (i <= texts.length - 1);
         return result;
     }
 
@@ -197,6 +197,7 @@ public class WebShopMain {
         TableForUX cart = new TableForUX(88, cartRows, List.of("A kosár aktuális tartalma", heading));
         cart.print();
     }
+
     private void putToCart() {
         printCart();
         printProducts();
@@ -253,9 +254,13 @@ public class WebShopMain {
         long productId = input.get(0);
         int amount = input.get(1).intValue();
         try {
-            String productToDecrease = shopService.getItem(productId).getProduct().getName();
+            String productNameToDecrease = shopService.getItem(productId).getProduct().getName();
+            if (shopService.getItem(productId).getAmount() < amount) {
+                amount = shopService.getItem(productId).getAmount();
+                messagePrint(" A kosárban csak "+  highlightIt(amount) + " darab " + highlightIt(productNameToDecrease) + " van.");
+            }
             shopService.decreaseAmount(productId, amount);
-            messagePrint(" A(z) " + highlightIt(productToDecrease) + " termék mennyiségét "
+            messagePrint(" A(z) " + highlightIt(productNameToDecrease) + " termék mennyiségét "
                     + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
         } catch (IllegalArgumentException iae) {
             errorMessagePrint("Hiba a termék darabszámának csökkentése során! " + iae.getMessage() + highlightIt(productId) + " id.");
