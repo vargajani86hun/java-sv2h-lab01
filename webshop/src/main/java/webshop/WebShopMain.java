@@ -256,8 +256,9 @@ public class WebShopMain {
         try {
             String productNameToDecrease = shopService.getItem(productId).getProduct().getName();
             if (shopService.getItem(productId).getAmount() < amount) {
+                errorMessagePrint(" A kosárban csak "+  highlightIt(shopService.getItem(productId).getAmount()) + " darab "
+                        + highlightIt(productNameToDecrease) + " van, nem csökkentheted a mennyiségét "+highlightIt(amount)+" darabbal.");
                 amount = shopService.getItem(productId).getAmount();
-                messagePrint(" A kosárban csak "+  highlightIt(amount) + " darab " + highlightIt(productNameToDecrease) + " van.");
             }
             shopService.decreaseAmount(productId, amount);
             messagePrint(" A(z) " + highlightIt(productNameToDecrease) + " termék mennyiségét "
