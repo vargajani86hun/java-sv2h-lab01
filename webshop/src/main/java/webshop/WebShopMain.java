@@ -72,16 +72,25 @@ public class WebShopMain {
     private void registerUser() {
         messagePrint("Regisztráció");
         List<String> input = inputsToList("Felhasználónév:", "Jelszó:", "Email:");
+        try {
         shopService.registerUser(input.get(0), input.get(1), input.get(2));
         messagePrint("Helló " + input.get(0) + ", a regisztráció sikeres volt.");
         messagePrint("Extra Kedvezményekért iratkozz fel hírlevelünkre is!");
+        } catch (IllegalArgumentException iae) {
+            messagePrint("Hiba a regisztáció során: "+iae.getMessage());
+        }
     }
 
     private void Login() {
         messagePrint("Belépés");
         List<String> input = inputsToList("Felhasználónév:", "Jelszó:");
+        try {
         shopService.logIn(input.get(0), input.get(1));
         runShoppingMenu();
+        } catch (IllegalArgumentException iae) {
+            messagePrint(iae.getMessage());
+        }
+
     }
 
     private int getSelectedMenuItem(int menuLinesNumber) {
@@ -176,13 +185,20 @@ public class WebShopMain {
         List<String> input = inputsToList("Megvásárolni kívánt termék cikkszáma:", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
-        shopService.addItem(productId, amount);
-        messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName())
-                + " termékből " + highlightIt(amount) + " darabot betettél a kosárba.");
+        try {
+            shopService.addItem(productId, amount);
+            messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName())
+                    + " termékből " + highlightIt(amount) + " darabot betettél a kosárba.");
+        } catch (IllegalArgumentException iae) {
+            messagePrint(iae.getMessage() + " A " + highlightIt((int) productId) + " cikkszámú termék nem található a webáruházban!");
+        }
     }
 
     private void deleteFromCart() {
         printCart();
+        if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges kivenni belőle terméket!")) {
+            return;
+        }
         long productId = Integer.parseInt(inputsToList("Törölni kívánt termék cikkszáma:").get(0));
         String productToDelete = shopService.getItem(productId).getProduct().getName();
         shopService.removeItem(productId);
@@ -191,31 +207,35 @@ public class WebShopMain {
 
     private void increaseAmount() {
         printCart();
+        if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges növelni benne a termékek darabszámát!")) {
+            return;
+        }
+
         List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét növelnéd?", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
-        shopService.increaseAmount(productId,amount);
+        shopService.increaseAmount(productId, amount);
         messagePrint(" A(z) " + highlightIt(shopService.getItem(productId).getProduct().getName()) + " termék mennyiségét "
                 + highlightIt(amount) + " darabbal növelted a kosárban.");
     }
 
     private void decreaseAmount() {
         printCart();
+        if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges csökkenteni benne a termékek darabszámát!")) {
+            return;
+        }
         List<String> input = inputsToList("Melyik cikkszámú termék mennyiségét csökkentenéd?", "Mennyiség:");
         long productId = Integer.parseInt(input.get(0));
         int amount = Integer.parseInt(input.get(1));
         String productToDecrease = shopService.getItem(productId).getProduct().getName();
-        shopService.decreaseAmount(productId,amount);
+        shopService.decreaseAmount(productId, amount);
         messagePrint(" A(z) " + highlightIt(productToDecrease) + " termék mennyiségét "
                 + highlightIt(amount) + " darabbal csökkentetted a kosárban.");
     }
 
     private void finalizeOrder() {
         printCart();
-        if (shopService.getUserCart().contentOfCart().size() == 0) {
-            frameAndTextPrint("");
-            System.out.println();
-            messagePrint("Üres a kosár - nem lehetséges a megrendelés véglegesítése!");
+        if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges a megrendelés véglegesítése!")) {
             return;
         }
         if (inputsToList("Véglegesíted a rendelést? (i/n)").get(0).equals("i")) {
@@ -223,6 +243,16 @@ public class WebShopMain {
             messagePrint("Köszönjük a megrendelést!");
             messagePrint("Iratkozz fel hírlevelünkre, elárasztunk spamekkel!");
         }
+    }
+
+    private boolean checkIfCartIsEmptyAndMessage(String s) {
+        if (shopService.getContentOfCart().size() == 0) {
+            frameAndTextPrint("");
+            System.out.println();
+            messagePrint(s);
+            return true;
+        }
+        return false;
     }
 
     private void frameAndTextPrint(String text) {
