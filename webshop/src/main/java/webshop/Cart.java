@@ -33,4 +33,8 @@ public class Cart {
     public void emptyCart() {
         items.clear();
     }
+
+    public boolean hasProduct(long id) {
+        return items.stream().anyMatch(item -> id == item.getProduct().getId());
+    }
 }
