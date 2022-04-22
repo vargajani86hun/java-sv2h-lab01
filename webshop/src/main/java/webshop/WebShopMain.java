@@ -154,18 +154,24 @@ public class WebShopMain {
                     printCart();
                     break;
                 case 3:
+                    printCart();
+                    printProducts();
                     putToCart();
                     break;
                 case 4:
+                    printCart();
                     deleteFromCart();
                     break;
                 case 5:
+                    printCart();
                     increaseAmount();
                     break;
                 case 6:
+                    printCart();
                     decreaseAmount();
                     break;
                 case 7:
+                    printCart();
                     finalizeOrder();
                     break;
                 case 8:
@@ -199,8 +205,6 @@ public class WebShopMain {
     }
 
     private void putToCart() {
-        printCart();
-        printProducts();
         List<Long> input = inputsToLongList("Megvásárolni kívánt termék cikkszáma:", "Mennyiség:");
         Long productId = input.get(0);
         int amount = input.get(1).intValue();
@@ -214,7 +218,6 @@ public class WebShopMain {
     }
 
     private void deleteFromCart() {
-        printCart();
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges kivenni belőle terméket!")) {
             return;
         }
@@ -229,7 +232,6 @@ public class WebShopMain {
     }
 
     private void increaseAmount() {
-        printCart();
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges növelni benne a termékek darabszámát!")) {
             return;
         }
@@ -246,7 +248,6 @@ public class WebShopMain {
     }
 
     private void decreaseAmount() {
-        printCart();
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges csökkenteni benne a termékek darabszámát!")) {
             return;
         }
@@ -269,7 +270,6 @@ public class WebShopMain {
     }
 
     private void finalizeOrder() {
-        printCart();
         if (checkIfCartIsEmptyAndMessage("Üres a kosár - nem lehetséges a megrendelés véglegesítése!")) {
             return;
         }
