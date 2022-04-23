@@ -273,6 +273,8 @@ public class WebShopMain {
             shopService.order();
             messagePrint("Köszönjük a megrendelést!");
             messagePrint("Iratkozz fel hírlevelünkre, elárasztunk spamekkel!");
+        } else {
+            messagePrint("A megrendelést nem véglegesítettük!");
         }
     }
 
